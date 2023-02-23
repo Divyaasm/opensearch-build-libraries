@@ -29,6 +29,6 @@ void call(Map args = [:]) {
         }
 
         sh """
-                   ${workdir}/validation.sh ${args.version}
+                   ${workdir}/validation.sh --version ${args.version}
                """
 }
