@@ -27,8 +27,6 @@ void call(Map args = [:]) {
                 workdir = "${WORKSPACE}/opensearch-build"
             }
         }
-        echo '${args.version}'
-        println this.args[0]
 
         sh """
                    ${workdir}/validation.sh ${args.version}
