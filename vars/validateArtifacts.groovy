@@ -40,6 +40,7 @@ String generateArguments(args) {
     String arguments = version
 
     // generation command line arguments
+    args.version{ key, value -> arguments += " --${key } ${value }"}
     args.each { key, value -> arguments += " --${key } ${value }" }
     return arguments
 }
