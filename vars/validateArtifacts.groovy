@@ -11,7 +11,7 @@
 SignArtifacts signs the given artifacts and saves the signature in the same directory.
 @param Map[version] <Required> - Version of the opensearch artifact that needs to be validated.
 @param Map[distribution] <Optional> - Choose distribution type among [tar(default),rpm,yum,docker].
-@param Map[arch] <Optional> - Select the architecture type among [x64(default) and arm64].
+@param Map[architecture] <Optional> - Select the architecture type among [x64(default) and arm64].
 @param Map[platform] <Optional> - The distribution platform.
 @param Map[docker_source] <Optional> - Specify the docker source from [DockerHub(default), ECR] to pull the docker image.
 @param Map[os_build_number]<Optional> - Specify Opensearch build number from opensearchstaging if required.
@@ -37,10 +37,7 @@ void call(Map args = [:]) {
 String generateArguments(args) {
     String arguments = ""
 
-    // generation command line arguments
-
+    // generation of command line arguments
     args.each { key, value -> arguments += " --${key } ${value }" }
-
-    echo "Tagging $arguments"
     return arguments
 }
