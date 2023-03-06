@@ -35,9 +35,6 @@ void call(Map args = [:]) {
                """
 }
 String generateArguments(args) {
-    String version = args.remove('version')
-    // version is mandatory and the first argument
-    String arguments = version
 
     // generation command line arguments
     args.each { key, value -> arguments += " --${key } ${value }" }
