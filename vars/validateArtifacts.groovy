@@ -35,6 +35,7 @@ void call(Map args = [:]) {
                """
 }
 String generateArguments(args) {
+    String arguments
 
     // generation command line arguments
     args.each { key, value -> arguments += " --${key } ${value }" }
