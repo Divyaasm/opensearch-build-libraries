@@ -28,7 +28,18 @@ void call(Map args = [:]) {
             }
         }
 
+        String arguments = generateArguments(args)
+
         sh """
-                   ${workdir}/validation.sh --version ${args.version} --distribution ${args.distribution} --arch ${args.architecture}
+                   ${workdir}/validation.sh ${arguments}
                """
+}
+String generateArguments(args) {
+    String version = args.remove('version')
+    // version is mandatory and the first argument
+    String arguments = version
+
+    // generation command line arguments
+    args.each { key, value -> arguments += " --${key } ${value }" }
+    return arguments
 }
