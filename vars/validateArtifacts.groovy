@@ -35,11 +35,11 @@ void call(Map args = [:]) {
                """
 }
 String generateArguments(args) {
-    String version = args.remove('version')
-    // artifactPath is mandatory and the first argument
-    String arguments = version
+    String arguments
 
     // generation command line arguments
     args.each { key, value -> arguments += " --${key } ${value }" }
+    args.remove(0)
+    echo "Tagging $args"
     return arguments
 }
