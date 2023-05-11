@@ -23,7 +23,7 @@ void call(Map args = [:]) {
 
         if (!fileExists("$WORKSPACE/validation.sh")) {
             dir('opensearch-build') {
-                git url: 'https://github.com/Divyaasm/opensearch-build.git', branch: 'validationdist'
+                git url: 'https://github.com/opensearch-project/opensearch-build.git', branch: 'main'
                 workdir = "${WORKSPACE}/opensearch-build"
             }
         }
