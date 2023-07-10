@@ -25,7 +25,7 @@ void call(Map args = [:]) {
     """
 
     build_number = sh""" docker inspect --format '{{ index .Config.Labels "org.label-schema.description"}}' ${docker_image} """
-    /*println("docker image successfully pulled and inspected, exit 1 ${build_time} ${build_number}")
+    println("${build_number}")
 
     staging_image = ${staging_image} + "${build_number}"
 
