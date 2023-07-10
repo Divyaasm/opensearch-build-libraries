@@ -10,6 +10,7 @@
 void call(Map args = [:]) {
     String docker_image = "opensearchproject/${args.product}:${args.version}"
     String staging_image = "opensearchstaging/${args.product}:${args.version}."
+    String build_time = ""
     String build_number = ""
     String prod_digest = ""
     String staging_digest = ""
