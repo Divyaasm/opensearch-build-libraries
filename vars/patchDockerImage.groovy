@@ -26,7 +26,10 @@ void call(Map args = [:]) {
     export build_time=`docker inspect --format '{{ index .Config.Labels "org.label-schema.build-date"}}' ${docker_image}`
     export build_number=`docker inspect --format '{{ index .Config.Labels "org.label-schema.description"}}' ${docker_image}`
     """
+    sh "ls -l > commandResult"
+    result = readFile('commandResult').trim()
 
+    build_number = sh " `docker inspect --format '{{ index .Config.Labels "org.label-schema.description"}}' ${docker_image}` "
     println("${build_number}")
 /*
     staging_image = ${staging_image} + "${build_number}"
