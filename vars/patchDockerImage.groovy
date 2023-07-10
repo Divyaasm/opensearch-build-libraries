@@ -9,6 +9,7 @@
 
 void call(Map args = [:]) {
     String docker_image = "opensearchproject/${args.product}:${args.version}"
+    String staging_image = "opensearchstaging/${args.product}:${args.version}."
     String build_time = ""
     String build_number = ""
     sh"""
@@ -18,5 +19,7 @@ void call(Map args = [:]) {
     build_time=`docker inspect --format '{{ index .Config.Labels "org.label-schema.build-date"}}' ${docker_image}`
     build_number=`docker inspect --format '{{ index .Config.Labels "org.label-schema.description"}}' ${docker_image}`
     """
-    println("docker image sucessfully pulled and inspected, exit 1 ${build_time} ${build_number}")
+    println("docker image successfully pulled and inspected, exit 1 ${build_time} ${build_number}")
+
+    staging_image += "${build_number}"
 }
