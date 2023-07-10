@@ -12,6 +12,9 @@ void call(Map args = [:]) {
     String staging_image = "opensearchstaging/${args.product}:${args.version}."
     String build_time = ""
     String build_number = ""
+    String prod_digest = ""
+    String staging_digest = ""
+
     sh"""
     #!/bin/bash
 
@@ -22,4 +25,20 @@ void call(Map args = [:]) {
     println("docker image successfully pulled and inspected, exit 1 ${build_time} ${build_number}")
 
     staging_image += "${build_number}"
+
+    println("staging_image ${staging_image}")
+
+    /* Validate Digests */
+    sh"""
+    #!/bin/bash
+
+    prod_digest=`docker inspect ${docker_image} | jq -r '.[0].RepoDigests[0]' | cut -d'@' -f2`
+    staging_digest=`docker inspect ${staging_image} | jq -r '.[0].RepoDigests[0]' | cut -d'@' -f2`
+
+    """
+    println("prod_digest staging_digest")
+
+
+
+
 }
