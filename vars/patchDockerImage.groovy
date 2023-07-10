@@ -18,25 +18,26 @@ void call(Map args = [:]) {
     sh"""
     #!/bin/bash
 
+
     docker pull ${docker_image}
-    build_time=`docker inspect --format '{{ index .Config.Labels "org.label-schema.build-date"}}' ${docker_image}`
-    build_number=`docker inspect --format '{{ index .Config.Labels "org.label-schema.description"}}' ${docker_image}`
+    $build_time=`docker inspect --format '{{ index .Config.Labels "org.label-schema.build-date"}}' ${docker_image}`
+    $build_number=`docker inspect --format '{{ index .Config.Labels "org.label-schema.description"}}' ${docker_image}`
     """
     println("docker image successfully pulled and inspected, exit 1 ${build_time} ${build_number}")
 
-    staging_image += "${build_number}"
+    staging_image = ${staging_image} + "${build_number}"
 
-    println("staging_image ${staging_image}")
+    println("staging_image: ${staging_image}")
 
     /* Validate Digests */
     sh"""
     #!/bin/bash
 
-    prod_digest=`docker inspect ${docker_image} | jq -r '.[0].RepoDigests[0]' | cut -d'@' -f2`
-    staging_digest=`docker inspect ${staging_image} | jq -r '.[0].RepoDigests[0]' | cut -d'@' -f2`
+    prod_digest=`docker inspect --format='{{.RepoDigests}}' opensearchproject/${docker_image}`
+    staging_digest=`docker inspect --format='{{.RepoDigests}}' opensearchproject/${docker_image}`
 
     """
-    println("prod_digest staging_digest")
+    println("${prod_digest[0]} ${staging_digest[0]}")
 
 
 
