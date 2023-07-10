@@ -21,26 +21,30 @@ void call(Map args = [:]) {
     docker pull ${docker_image}
     """
     sh """docker inspect --format '{{ index .Config.Labels "org.label-schema.build-date"}}' ${docker_image} > build_time"""
+    build_time = readFile('build_time').trim()
+    sh """docker inspect --format '{{ index .Config.Labels "org.label-schema.description"}}' ${docker_image} > build_number"""
+    build_number = readFile('build_number').trim()
+    build_time = readFile('build_time').trim()
+    println("${result} ${build_time}")
 
-
-    sh """docker inspect --format '{{ index .Config.Labels "org.label-schema.description"}}' ${docker_image} > commandResult"""
-    result = readFile('commandResult').trim()
-    build_tim = readFile('build_time').trim()
-    println("${result} ${build_tim}")
-
-/*
     staging_image = ${staging_image} + "${build_number}"
 
     println("staging_image: ${staging_image}")
 
-    Validate Digests
+    /*Validate Digests*/
     sh"""
     #!/bin/bash
 
     prod_digest=`docker inspect --format='{{.RepoDigests}}' opensearchproject/${docker_image}`
-    staging_digest=`docker inspect --format='{{.RepoDigests}}' opensearchproject/${docker_image}`
+    staging_digest=`docker inspect --format='{{.RepoDigests}}' opensearchproject/${staging_image}`
+
+    if [ ${prod_digest[0]} -eq ${staging_digest[0]} ]
+    then
+        echo "Digests validated"
+    else
+        echo "Digests do not match"
+    fi
 
     """
-    println("${prod_digest[0]} ${staging_digest[0]}")
-*/
+
 }
