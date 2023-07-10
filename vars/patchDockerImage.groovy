@@ -28,6 +28,7 @@ void call(Map args = [:]) {
     """
     sh "docker inspect --format '{{ index .Config.Labels "org.label-schema.description"}}' ${docker_image} > commandResult"
     result = readFile('commandResult').trim()
+    println("${result}")
 
 /*
     staging_image = ${staging_image} + "${build_number}"
