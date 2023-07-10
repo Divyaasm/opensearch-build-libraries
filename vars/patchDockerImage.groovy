@@ -17,19 +17,21 @@ void call(Map args = [:]) {
 
     sh"""
     #!/bin/bash
-
-
     docker pull ${docker_image}
+    """
+    sh"""
     export build_time=`docker inspect --format '{{ index .Config.Labels "org.label-schema.build-date"}}' ${docker_image}`
     export build_number=`docker inspect --format '{{ index .Config.Labels "org.label-schema.description"}}' ${docker_image}`
     """
-    println("docker image successfully pulled and inspected, exit 1 ${build_time} ${build_number}")
+
+    build_number = sh""" docker inspect --format '{{ index .Config.Labels "org.label-schema.description"}}' ${docker_image} """
+    /*println("docker image successfully pulled and inspected, exit 1 ${build_time} ${build_number}")
 
     staging_image = ${staging_image} + "${build_number}"
 
     println("staging_image: ${staging_image}")
 
-    /* Validate Digests */
+    Validate Digests
     sh"""
     #!/bin/bash
 
@@ -38,8 +40,5 @@ void call(Map args = [:]) {
 
     """
     println("${prod_digest[0]} ${staging_digest[0]}")
-
-
-
-
+*/
 }
