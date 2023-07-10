@@ -20,12 +20,12 @@ void call(Map args = [:]) {
 
     docker pull ${docker_image}
     """
-    sh """docker inspect --format '{{ index .Config.Labels "org.label-schema.build-date"}}' ${docker_image} > build_time"""
-    build_time = readFile('build_time').trim()
-    sh """docker inspect --format '{{ index .Config.Labels "org.label-schema.description"}}' ${docker_image} > build_number"""
-    build_number = readFile('build_number').trim()
-    build_time = readFile('build_time').trim()
-    println("${result} ${build_time}")
+    sh """docker inspect --format '{{ index .Config.Labels "org.label-schema.build-date"}}' ${docker_image} > time"""
+    build_time = readFile('time').trim()
+    sh """docker inspect --format '{{ index .Config.Labels "org.label-schema.description"}}' ${docker_image} > number"""
+    build_number = readFile('number').trim()
+    build_time = readFile('time').trim()
+    println("${number} ${time}")
 
     staging_image = ${staging_image} + "${build_number}"
 
