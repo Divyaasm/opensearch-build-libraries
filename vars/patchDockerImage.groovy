@@ -10,8 +10,6 @@
 void call(Map args = [:]) {
     String docker_image = "opensearchproject/${args.product}:${args.version}"
     String staging_image = "opensearchstaging/${args.product}:${args.version}."
-    String build_time = ""
-    String build_number = ""
     String prod_digest = ""
     String staging_digest = ""
 
@@ -23,12 +21,14 @@ void call(Map args = [:]) {
     docker pull ${docker_image}
     """
     sh"""
-    export build_time=`docker inspect --format '{{ index .Config.Labels "org.label-schema.build-date"}}' ${docker_image}`
-    export build_number=`docker inspect --format '{{ index .Config.Labels "org.label-schema.description"}}' ${docker_image}`
+    docker inspect --format '{{ index .Config.Labels "org.label-schema.build-date"}}' ${docker_image} > build_time
+    docker inspect --format '{{ index .Config.Labels "org.label-schema.description"}}' ${docker_image}` > build_number
     """
     sh """docker inspect --format '{{ index .Config.Labels "org.label-schema.description"}}' ${docker_image} > commandResult"""
     result = readFile('commandResult').trim()
-    println("${result}")
+    build_time = readFile('build_time').trim()
+    build_numbers = readFile('build_number').trim()
+    println("${result} ${build_time} ${build_numbers}")
 
 /*
     staging_image = ${staging_image} + "${build_number}"
