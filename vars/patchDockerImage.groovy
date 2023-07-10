@@ -24,7 +24,6 @@ void call(Map args = [:]) {
     build_time = readFile('time').trim()
     sh """docker inspect --format '{{ index .Config.Labels "org.label-schema.description"}}' ${docker_image} > number"""
     build_number = readFile('number').trim()
-    build_time = readFile('time').trim()
     println("${number} ${time}")
 
     staging_image = ${staging_image} + "${build_number}"
