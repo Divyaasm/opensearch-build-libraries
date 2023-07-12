@@ -49,5 +49,14 @@ void call(Map args = [:]) {
 
     println("${staging_digest}")
 
+    if (prod_digest == staging_digest)
+    {
+    println("${staging_digest}")
+    }
+    else
+    {
+    println("Digests do not match")
+    }
+
 
 }
