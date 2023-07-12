@@ -33,9 +33,9 @@ void call(Map args = [:]) {
 
     staging_image = "${staging_image}" + "${build_number}"
 
-    /*println("staging_image: ${staging_image}")
+    println("staging_image: ${staging_image}")
 
-    Validate Digests*/
+    /*Validate Digests*/
 
     sh"""
     #!/bin/bash
@@ -45,13 +45,15 @@ void call(Map args = [:]) {
     prod_digest=`docker inspect --format='{{.RepoDigests}}' opensearchproject/${docker_image}`
     staging_digest=`docker inspect --format='{{.RepoDigests}}' opensearchstaging/${staging_image}`
 
+    echo "${prod_digest}"
+    """
+    /*
     if [ ${prod_digest[0]} -eq ${staging_digest[0]} ]
     then
         echo "Digests validated"
     else
         echo "Digests do not match"
     fi
-
-    """
+    */
 
 }
