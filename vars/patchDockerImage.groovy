@@ -42,8 +42,8 @@ void call(Map args = [:]) {
 
     echo "Inside shellscript"
 
-    prod_digest=`docker inspect --format='{{.RepoDigests}}' opensearchproject/${docker_image}`
-    staging_digest=`docker inspect --format='{{.RepoDigests}}' opensearchstaging/${staging_image}`
+    prod_digest=`docker inspect --format='{{.RepoDigests}}' ${docker_image}`
+    staging_digest=`docker inspect --format='{{.RepoDigests}}' ${staging_image}`
 
     echo "${prod_digest}"
     """
