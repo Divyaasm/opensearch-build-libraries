@@ -48,7 +48,7 @@ void call(Map args = [:]) {
 
     echo "${staging_digest}"
 
-    echo "${prod_digest[0]}"
+    echo "${prod_digest}"
     """
 
     /*
