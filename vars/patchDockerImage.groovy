@@ -44,9 +44,9 @@ void call(Map args = [:]) {
 
     echo "Inside shellscript"
 
-    prod_digest=`docker inspect ${staging_image} | jq -r '.[0].RepoDigests[0]' | cut -d'@' -f2`
+    prod_digest=`docker inspect ${docker_image} | jq -r '.[0].RepoDigests[0]' | cut -d'@' -f2`
 
-    staging_digest=`docker inspect --format='{{.RepoDigests}}' ${staging_image}`
+    staging_digest=`docker inspect ${staging_image} | jq -r '.[0].RepoDigests[0]' | cut -d'@' -f2`
 
 
     if [ "$prod_digest" -eq "$staging_digest" ]
