@@ -46,10 +46,13 @@ void call(Map args = [:]) {
     docker pull ${staging_image}
     staging_digest=`docker inspect --format='{{.RepoDigests}}' ${staging_image}`
 
-    echo "$staging_digest"
-    echo "$staging_digest["opensearchproject/${args.product}"]"
+    if [ "$prod_digest" -eq "$staging_digest" ]
+    then
+        echo "True"
+    else
+        echo "False"
+    fi
 
-    echo "$prod_digest"
     """
 
     /*
