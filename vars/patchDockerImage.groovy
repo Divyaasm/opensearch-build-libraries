@@ -35,6 +35,8 @@ void call(Map args = [:]) {
 
     println("staging_image: ${staging_image}")
 
+    sh """docker pull ${staging_image}"""
+
     /*Validate Digests*/
 
     sh"""
@@ -43,8 +45,10 @@ void call(Map args = [:]) {
     echo "Inside shellscript"
 
     prod_digest=`docker inspect --format='{{.RepoDigests}}' ${docker_image}`
-    docker pull ${staging_image}
+
     staging_digest=`docker inspect --format='{{.RepoDigests}}' ${staging_image}`
+
+    echo "$prod_digest"
 
     if [ "$prod_digest" -eq "$staging_digest" ]
     then
