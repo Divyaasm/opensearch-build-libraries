@@ -41,7 +41,7 @@ void call(Map args = [:]) {
     #!/bin/bash
 
     prod_digest=`docker inspect --format='{{.RepoDigests}}' opensearchproject/${docker_image}`
-    staging_digest=`docker inspect --format='{{.RepoDigests}}' opensearchproject/${staging_image}`
+    staging_digest=`docker inspect --format='{{.RepoDigests}}' opensearchstaging/${staging_image}`
 
     if [ ${prod_digest[0]} -eq ${staging_digest[0]} ]
     then
