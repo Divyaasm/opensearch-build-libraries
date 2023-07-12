@@ -29,13 +29,13 @@ void call(Map args = [:]) {
 
     build_number = readFile('number').trim()
 
-    println("${build_number}")
+    println("${build_number}, ${build_time}")
 
     staging_image = "${staging_image}" + "${build_number}"
 
     println("staging_image: ${staging_image}")
 
-    /*Validate Digests
+    /*Validate Digests*/
     sh"""
     #!/bin/bash
 
