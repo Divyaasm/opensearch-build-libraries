@@ -49,7 +49,7 @@ void call(Map args = [:]) {
     staging_digest=`docker inspect ${staging_image} | jq -r '.[0].RepoDigests[0]' | cut -d'@' -f2`
 
 
-    if [ "$prod_digest" -eq "$staging_digest" ]
+    if [ "$prod_digest" == "$staging_digest" ]
     then
         echo "True"
     else
