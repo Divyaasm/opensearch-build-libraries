@@ -43,10 +43,14 @@ void call(Map args = [:]) {
     echo "Inside shellscript"
 
     prod_digest=`docker inspect --format='{{.RepoDigests}}' ${docker_image}`
+    docker pull ${staging_image}
     staging_digest=`docker inspect --format='{{.RepoDigests}}' ${staging_image}`
 
-    echo "${prod_digest}"
+    echo "${staging_digest}"
+
+    echo "${prod_digest[0]}"
     """
+
     /*
     if [ ${prod_digest[0]} -eq ${staging_digest[0]} ]
     then
