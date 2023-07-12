@@ -12,6 +12,7 @@ void call(Map args = [:]) {
     String staging_image = "opensearchstaging/${args.product}:${args.version}."
     String prod_digest = ""
     String staging_digest = ""
+    String result = ""
 
     sh"""
     #!/bin/bash
@@ -39,30 +40,14 @@ void call(Map args = [:]) {
 
     /*Validate Digests*/
 
-    sh"""
-    #!/bin/bash
+    sh"""docker inspect ${docker_image} | jq -r '.[0].RepoDigests[0]' | cut -d'@' -f2` > prod"""
 
-    echo "Inside shellscript"
+    sh"""docker inspect ${staging_image} | jq -r '.[0].RepoDigests[0]' | cut -d'@' -f2` > stage"""
 
-    prod_digest=`docker inspect ${docker_image} | jq -r '.[0].RepoDigests[0]' | cut -d'@' -f2`
+    prod_digest = readFile('prod').trim()
+    staging_digest = readFile('stage').trim()
 
-    staging_digest=`docker inspect ${staging_image} | jq -r '.[0].RepoDigests[0]' | cut -d'@' -f2`
+    println("${staging_digest}")
 
-    if ["$prod_digest" == "$staging_digest"]; then
-        echo "True"
-    else
-        echo "False"
-    fi
-
-    """
-
-    /*
-    if [ ${prod_digest[0]} -eq ${staging_digest[0]} ]
-    then
-        echo "Digests validated"
-    else
-        echo "Digests do not match"
-    fi
-    */
 
 }
