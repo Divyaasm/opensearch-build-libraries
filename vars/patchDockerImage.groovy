@@ -40,9 +40,9 @@ void call(Map args = [:]) {
 
     /*Validate Digests*/
 
-    sh"""docker inspect ${docker_image} | jq -r '.[0].RepoDigests[0]' | cut -d'@' -f2` > prod"""
+    sh"""docker inspect ${docker_image} | jq -r '.[0].RepoDigests[0]' | cut -d'@' -f2 > prod"""
 
-    sh"""docker inspect ${staging_image} | jq -r '.[0].RepoDigests[0]' | cut -d'@' -f2` > stage"""
+    sh"""docker inspect ${staging_image} | jq -r '.[0].RepoDigests[0]' | cut -d'@' -f2 > stage"""
 
     prod_digest = readFile('prod').trim()
     staging_digest = readFile('stage').trim()
