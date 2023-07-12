@@ -33,9 +33,9 @@ void call(Map args = [:]) {
 
     staging_image = "${staging_image}" + "${build_number}"
 
-    println("staging_image: ${staging_image}")
+    /*println("staging_image: ${staging_image}")
 
-    /*Validate Digests*/
+    Validate Digests*/
 
     sh"""
     #!/bin/bash
