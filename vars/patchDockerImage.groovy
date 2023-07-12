@@ -20,17 +20,22 @@ void call(Map args = [:]) {
 
     docker pull ${docker_image}
     """
+
     sh """docker inspect --format '{{ index .Config.Labels "org.label-schema.build-date"}}' ${docker_image} > time"""
+
     build_time = readFile('time').trim()
+
     sh """docker inspect --format '{{ index .Config.Labels "org.label-schema.description"}}' ${docker_image} > number"""
+
     build_number = readFile('number').trim()
-    println("${number} ${time}")
+
+    println("${build_number}")
 
     staging_image = ${staging_image} + "${build_number}"
 
     println("staging_image: ${staging_image}")
 
-    /*Validate Digests*/
+    /*Validate Digests
     sh"""
     #!/bin/bash
 
@@ -45,5 +50,6 @@ void call(Map args = [:]) {
     fi
 
     """
+    */
 
 }
