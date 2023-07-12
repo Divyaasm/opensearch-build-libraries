@@ -31,7 +31,7 @@ void call(Map args = [:]) {
 
     println("${build_number}")
 
-    staging_image = ${staging_image} + "${build_number}"
+    staging_image = "${staging_image}" + "${build_number}"
 
     println("staging_image: ${staging_image}")
 
