@@ -36,6 +36,7 @@ void call(Map args = [:]) {
     println("staging_image: ${staging_image}")
 
     /*Validate Digests*/
+
     sh"""
     #!/bin/bash
 
@@ -50,6 +51,5 @@ void call(Map args = [:]) {
     fi
 
     """
-    */
 
 }
