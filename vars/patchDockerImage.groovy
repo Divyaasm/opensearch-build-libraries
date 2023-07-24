@@ -9,7 +9,7 @@
 
 void call(Map args = [:]) {
     def lib = library(identifier: 'jenkins@dockerpackerlib', retriever: legacySCM(scm))
-    String docker_image = "opensearchproject/${args.product}:${args.version}"
+    String docker_image = "opensearchproject/${args.project}:${args.version}"
     String manifest = ""
     String build_date = ""
 
@@ -29,6 +29,8 @@ void call(Map args = [:]) {
     version = readFile('versionnumber').trim()
     build_time = readFile('time').trim()
     build_number = readFile('number').trim()
+
+    echo "${version} ${build_time} ${build_number}"
 
     def inputManifest = lib.jenkins.InputManifest.new(readYaml(file: "manifests/${version}/${args.project}-${version}.yml"))
 
