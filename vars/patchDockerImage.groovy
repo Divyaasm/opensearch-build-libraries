@@ -8,8 +8,7 @@
  */
 
 void call(Map args = [:]) {
-    def lib = library(identifier: 'jenkins@main', retriever: legacySCM(scm))
-    def inputManifest = lib.jenkins.InputManifest.new(readYaml(file: "manifests/"))
+    def lib = library(identifier: 'jenkins@dockerpackerlib', retriever: legacySCM(scm))
     String docker_image = "opensearchproject/${args.product}:${args.version}"
     String manifest = ""
     String build_date = ""
