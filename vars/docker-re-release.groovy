@@ -8,6 +8,8 @@
  */
 
 void call(Map args = [:]) {
+    def lib = library(identifier: 'jenkins@main', retriever: legacySCM(scm))
+    def inputManifest = lib.jenkins.InputManifest.new(readYaml(file: "manifests/"))
     String docker_image = "opensearchproject/${args.product}:${args.version}"
     String manifest = ""
     String build_date = ""
@@ -29,13 +31,15 @@ void call(Map args = [:]) {
     build_time = readFile('time').trim()
     build_number = readFile('number').trim()
 
+    def inputManifest = lib.jenkins.InputManifest.new(readYaml(file: "manifests/${version}/${args.project}-${version}.yml"))
+
+    artifactUrlX64 = "https://ci.opensearch.org/ci/dbc/distribution-build-${args.project}/${version}/${build_number}/linux/x64/tar/dist/${args.project}/${args.project}-${version}-linux-x64.tar.gz"
+
+    artifactUrlARM64 = "https://ci.opensearch.org/ci/dbc/distribution-build-${args.project}/${version}/${build_number}/linux/x64/tar/dist/${args.project}/${args.project}-${version}-linux-x64.tar.gz"
+
+
     /*slice the time to get date value*/
-    build_date = build_time[0..3] + build_time[5..6] + build_time[8..9]
+    build_date = build_time[0..4] + build_time[5..7] + build_time[8..10]
     echo "${build_date}"
-
-
-
-
-
 
 }
