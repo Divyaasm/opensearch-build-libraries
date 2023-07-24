@@ -10,8 +10,6 @@
 void call(Map args = [:]) {
     def lib = library(identifier: 'jenkins@dockerpackerlib', retriever: legacySCM(scm))
     String docker_image = "opensearchproject/${args.project}:${args.version}"
-    String manifest = ""
-    String build_date = ""
 
     sh"""
     #!/bin/bash
@@ -44,6 +42,19 @@ void call(Map args = [:]) {
     echo "${build_date}"
     echo "${artifactUrlX64}"
     echo "${artifactUrlARM64}"
+
+    String filename = inputManifest.build.getFilename()
+
+    def build_qualifier = inputManifest.build.qualifier
+
+    if (build_qualifier != null && build_qualifier != 'null') {
+        build_qualifier = "-" + build_qualifier
+    }
+    else {
+        build_qualifier = ''
+    }
+
+    echo "${build_qualifier} ${filename}"
 
 
 }
