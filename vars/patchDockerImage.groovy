@@ -40,7 +40,7 @@ void call(Map args = [:]) {
 
 
     /*slice the time to get date value*/
-    build_date = build_time[0..4] + build_time[5..7] + build_time[8..10]
+    build_date = build_time[0..3] + build_time[5..6] + build_time[8..9]
     echo "${build_date}"
 
 }
