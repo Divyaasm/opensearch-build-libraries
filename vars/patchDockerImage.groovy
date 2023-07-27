@@ -106,5 +106,15 @@ void call(Map args = [:]) {
                 string(name: 'IMAGE_FULL_NAME', value: "opensearchstaging/${filename}:${inputManifest.build.version}${build_qualifier}")
             ]
         }
+
+        if(args.rerelease){
+            dockerPromote: {
+                build job: 'promote-docker',
+                parameters: [
+                    string(name: 'SOURCE_IMAGES', value: "${filename}:${inputManifest.build.version}${build_qualifier}.${build_number}.${build_date}"),
+                    string(name: 'RELEASE_VERSION', value: "${version}")
+                ]
+            }
+        }
     }
 }
