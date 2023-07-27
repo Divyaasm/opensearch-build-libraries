@@ -34,7 +34,7 @@ void call(Map args = [:]) {
 
     artifactUrlX64 = "https://ci.opensearch.org/ci/dbc/distribution-build-${args.project}/${version}/${build_number}/linux/x64/tar/dist/${args.project}/${args.project}-${version}-linux-x64.tar.gz"
 
-    artifactUrlARM64 = "https://ci.opensearch.org/ci/dbc/distribution-build-${args.project}/${version}/${build_number}/linux/x64/tar/dist/${args.project}/${args.project}-${version}-linux-x64.tar.gz"
+    artifactUrlARM64 = "https://ci.opensearch.org/ci/dbc/distribution-build-${args.project}/${version}/${build_number}/linux/arm64/tar/dist/${args.project}/${args.project}-${version}-linux-arm64.tar.gz"
 
 
     /*slice the time to get date value*/
@@ -85,5 +85,26 @@ void call(Map args = [:]) {
                 ].join(' && ')),
             ]
         }
+
+    echo 'Trigger docker create tag with build number'
+    if (args.rerelease) {
+        dockerCopy: {
+            build job: 'copy-docker',
+            parameters: [
+                string(name: 'SOURCE_IMAGE_REGISTRY', value: 'opensearchstaging'),
+                string(name: 'SOURCE_IMAGE', value: "${filename}:${inputManifest.build.version}${build_qualifier}"),
+                string(name: 'DESTINATION_IMAGE_REGISTRY', value: 'opensearchstaging'),
+                string(name: 'DESTINATION_IMAGE', value: "${filename}:${inputManifest.build.version}${build_qualifier}.${build_number}.${build_date}")
+            ]
+        }
+    }
+
+    echo "Trigger docker-scan for ${filename} version ${inputManifest.build.version}${build_qualifier}"
+    dockerScan: {
+        build job: 'scan-docker',
+        parameters: [
+        string(name: 'IMAGE_FULL_NAME', value: "opensearchstaging/${filename}:${inputManifest.build.version}${build_qualifier}"
+        ]
+    }
     }
 }
