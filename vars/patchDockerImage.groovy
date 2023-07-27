@@ -43,7 +43,7 @@ void call(Map args = [:]) {
     echo "${artifactUrlX64}"
     echo "${artifactUrlARM64}"
 
-    String args.project = inputManifest.build.getFilename()
+    String filename = inputManifest.build.getFilename()
 
     def build_qualifier = inputManifest.build.qualifier
 
@@ -54,7 +54,7 @@ void call(Map args = [:]) {
         build_qualifier = ''
     }
 
-    echo "${build_qualifier} ${args.project}"
+    echo "${build_qualifier} ${filename}"
 
 
 }
