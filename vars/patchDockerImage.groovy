@@ -56,34 +56,5 @@ void call(Map args = [:]) {
 
     echo "${build_qualifier} ${args.project}"
 
-    if (artifactUrlX64 == null || artifactUrlArm64 ==  null) {
-        echo 'Skipping docker build, one of x64 or arm64 artifacts was not built.'
-    } else {
-        echo 'Trigger docker-build'
-        dockerBuild: {
-            build job: 'build-docker',
-            parameters: [
-                string(name: 'DOCKER_BUILD_GIT_REPOSITORY', value: 'https://github.com/opensearch-project/opensearch-build'),
-                string(name: 'DOCKER_BUILD_GIT_REPOSITORY_REFERENCE', value: 'main'),
-                string(name: 'DOCKER_BUILD_SCRIPT_WITH_COMMANDS', value: [
-                        'id',
-                        'pwd',
-                        'cd docker/release',
-                        "curl -sSL ${artifactUrlX64} -o ${args.project}-x64.tgz",
-                        "curl -sSL ${artifactUrlArm64} -o ${args.project}-arm64.tgz",
-                        [
-                            'bash',
-                            'build-image-multi-arch.sh',
-                            "-v ${inputManifest.build.version}${build_qualifier}",
-                            "-f ./dockerfiles/${args.project}.al2.dockerfile",
-                            "-p ${args.project}",
-                            "-a 'x64,arm64'",
-                            "-r opensearchstaging/${args.project}",
-                            "-t '${args.project}-x64.tgz,${args.project}-arm64.tgz'",
-                            "-n ${build_number}"
-                        ].join(' ')
-                    ].join(' && ')),
-            ]
-        }
-    }
+
 }
