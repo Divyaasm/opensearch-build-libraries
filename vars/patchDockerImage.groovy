@@ -85,5 +85,18 @@ void call(Map args = [:]) {
                 ].join(' && ')),
             ]
         }
+
+        echo 'Trigger docker create tag with build number'
+        if (args.rerelease) {
+            dockerCopy: {
+                build job: 'copy-docker',
+                parameters: [
+                    string(name: 'SOURCE_IMAGE_REGISTRY', value: 'opensearchstaging'),
+                    string(name: 'SOURCE_IMAGE', value: "${filename}:${inputManifest.build.version}${build_qualifier}"),
+                    string(name: 'DESTINATION_IMAGE_REGISTRY', value: 'opensearchstaging'),
+                    string(name: 'DESTINATION_IMAGE', value: "${filename}:${inputManifest.build.version}${build_qualifier}.${build_number}.${build_date}")
+                ]
+            }
+        }
     }
 }
