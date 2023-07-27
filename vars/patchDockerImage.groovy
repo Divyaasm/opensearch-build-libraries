@@ -56,7 +56,7 @@ void call(Map args = [:]) {
 
     echo "${build_qualifier} ${filename}"
 
-    if (artifactUrlX64 == null || artifactUrlArm64 ==  null) {
+    if (artifactUrlX64 == null || artifactUrlARM64 ==  null) {
     echo 'Skipping docker build, one of x64 or arm64 artifacts was not built.'
     } else {
         echo 'Trigger docker-build'
