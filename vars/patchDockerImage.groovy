@@ -98,5 +98,13 @@ void call(Map args = [:]) {
                 ]
             }
         }
+
+        echo "Trigger docker-scan for ${filename} version ${inputManifest.build.version}${build_qualifier}"
+        dockerScan: {
+            build job: 'scan-docker',
+            parameters: [
+                string(name: 'IMAGE_FULL_NAME', value: "opensearchstaging/${filename}:${inputManifest.build.version}${build_qualifier}"
+            ]
+        }
     }
 }
