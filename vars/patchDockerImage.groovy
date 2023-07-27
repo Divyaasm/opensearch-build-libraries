@@ -70,7 +70,7 @@ void call(Map args = [:]) {
                         'pwd',
                         'cd docker/release',
                         "curl -sSL ${artifactUrlX64} -o ${args.project}-x64.tgz",
-                        "curl -sSL ${artifactUrlArm64} -o ${args.project}-arm64.tgz",
+                        "curl -sSL ${artifactUrlARM64} -o ${args.project}-arm64.tgz",
                         [
                             'bash',
                             'build-image-multi-arch.sh',
