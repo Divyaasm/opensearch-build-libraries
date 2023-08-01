@@ -9,7 +9,7 @@
 
 void call(Map args = [:]) {
     def lib = library(identifier: 'jenkins@dockerpackerlib', retriever: legacySCM(scm))
-    String docker_image = "opensearchproject/${args.project}:${args.version}"
+    String docker_image = "opensearchproject/${args.project}:${args.tag}"
 
     sh"""
     #!/bin/bash
@@ -76,7 +76,7 @@ void call(Map args = [:]) {
             ]
         }
 
-        echo 'Trigger docker copy with tag build date '
+        echo 'Trigger docker-copy with tag build date '
         if (args.rerelease) {
             dockerCopy: {
                 build job: 'docker-copy',
