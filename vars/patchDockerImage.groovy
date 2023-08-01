@@ -9,7 +9,7 @@
 
 void call(Map args = [:]) {
     def lib = library(identifier: 'jenkins@dockerpackerlib', retriever: legacySCM(scm))
-    String docker_image = "opensearchproject/${args.product}:${args.version}"
+    String docker_image = "opensearchproject/${args.project}:${args.version}"
 
     sh"""
     #!/bin/bash
@@ -30,11 +30,11 @@ void call(Map args = [:]) {
 
     echo "${version} ${build_time} ${build_number}"
 
-    def inputManifest = lib.jenkins.InputManifest.new(readYaml(file: "manifests/${version}/${args.product}-${version}.yml"))
+    def inputManifest = lib.jenkins.InputManifest.new(readYaml(file: "manifests/${version}/${args.project}-${version}.yml"))
 
-    artifactUrlX64 = "https://ci.opensearch.org/ci/dbc/distribution-build-${args.product}/${version}/${build_number}/linux/x64/tar/dist/${args.product}/${args.product}-${version}-linux-x64.tar.gz"
+    artifactUrlX64 = "https://ci.opensearch.org/ci/dbc/distribution-build-${args.project}/${version}/${build_number}/linux/x64/tar/dist/${args.project}/${args.project}-${version}-linux-x64.tar.gz"
 
-    artifactUrlARM64 = "https://ci.opensearch.org/ci/dbc/distribution-build-${args.product}/${version}/${build_number}/linux/arm64/tar/dist/${args.product}/${args.product}-${version}-linux-arm64.tar.gz"
+    artifactUrlARM64 = "https://ci.opensearch.org/ci/dbc/distribution-build-${args.project}/${version}/${build_number}/linux/arm64/tar/dist/${args.project}/${args.project}-${version}-linux-arm64.tar.gz"
 
 
     /*slice the time to get date value*/
@@ -69,17 +69,17 @@ void call(Map args = [:]) {
                         'id',
                         'pwd',
                         'cd docker/release',
-                        "curl -sSL ${artifactUrlX64} -o ${args.product}-x64.tgz",
-                        "curl -sSL ${artifactUrlARM64} -o ${args.product}-arm64.tgz",
+                        "curl -sSL ${artifactUrlX64} -o ${args.project}-x64.tgz",
+                        "curl -sSL ${artifactUrlARM64} -o ${args.project}-arm64.tgz",
                         [
                             'bash',
                             'build-image-multi-arch.sh',
                             "-v ${inputManifest.build.version}${build_qualifier}",
-                            "-f ./dockerfiles/${args.product}.al2.dockerfile",
-                            "-p ${args.product}",
+                            "-f ./dockerfiles/${args.project}.al2.dockerfile",
+                            "-p ${args.project}",
                             "-a 'x64,arm64'",
-                            "-r opensearchstaging/${args.product}",
-                            "-t '${args.product}-x64.tgz,${args.product}-arm64.tgz'",
+                            "-r opensearchstaging/${args.project}",
+                            "-t '${args.project}-x64.tgz,${args.project}-arm64.tgz'",
                             "-n ${build_number}"
                         ].join(' ')
                 ].join(' && ')),
