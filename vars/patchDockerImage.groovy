@@ -61,7 +61,7 @@ void call(Map args = [:]) {
     } else {
         echo 'Trigger docker-build'
         dockerBuild: {
-            build job: 'build-docker',
+            build job: 'docker-build',
             parameters: [
                 string(name: 'DOCKER_BUILD_GIT_REPOSITORY', value: 'https://github.com/opensearch-project/opensearch-build'),
                 string(name: 'DOCKER_BUILD_GIT_REPOSITORY_REFERENCE', value: 'main'),
@@ -89,7 +89,7 @@ void call(Map args = [:]) {
         echo 'Trigger docker create tag with build number'
         if (args.rerelease) {
             dockerCopy: {
-                build job: 'copy-docker',
+                build job: 'docker-copy',
                 parameters: [
                     string(name: 'SOURCE_IMAGE_REGISTRY', value: 'opensearchstaging'),
                     string(name: 'SOURCE_IMAGE', value: "${filename}:${inputManifest.build.version}${build_qualifier}"),
@@ -101,7 +101,7 @@ void call(Map args = [:]) {
 
         echo "Trigger docker-scan for ${filename} version ${inputManifest.build.version}${build_qualifier}"
         dockerScan: {
-            build job: 'scan-docker',
+            build job: 'docker-scan',
             parameters: [
                 string(name: 'IMAGE_FULL_NAME', value: "opensearchstaging/${filename}:${inputManifest.build.version}${build_qualifier}")
             ]
@@ -109,13 +109,12 @@ void call(Map args = [:]) {
 
         if(args.rerelease){
             dockerPromote: {
-                build job: 'promote-docker',
+                build job: 'docker-promote',
                 parameters: [
                     string(name: 'SOURCE_IMAGES', value: "${filename}:${inputManifest.build.version}${build_qualifier}.${build_number}.${build_date}"),
                     string(name: 'RELEASE_VERSION', value: "${version}")
                 ]
             }
         }
-        echo "Triggered docker-promote"
     }
 }
