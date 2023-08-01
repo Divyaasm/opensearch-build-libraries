@@ -116,5 +116,6 @@ void call(Map args = [:]) {
                 ]
             }
         }
+        echo "Triggered docker-promote"
     }
 }
