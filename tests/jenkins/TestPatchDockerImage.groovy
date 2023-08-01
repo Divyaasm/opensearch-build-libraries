@@ -23,7 +23,6 @@ class TestPatchDockerImage extends BuildPipelineTest {
             )
         )
         super.setUp()
-
     }
 
     @Test
