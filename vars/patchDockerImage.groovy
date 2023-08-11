@@ -11,18 +11,13 @@ void call(Map args = [:]) {
     def lib = library(identifier: 'jenkins@dockerpackerlib', retriever: legacySCM(scm))
     String docker_image = "opensearchproject/${args.product}:${args.tag}"
 
-    sh"""
-    #!/bin/bash
-    set -e
-    set +x
+    sh "docker pull ${docker_image}"
 
-    docker pull ${docker_image}
-    """
-    sh """docker inspect --format '{{ index .Config.Labels "org.label-schema.version"}}' ${docker_image} > versionnumber"""
+    sh "docker inspect --format '{{ index .Config.Labels "org.label-schema.version"}}' ${docker_image} > versionnumber"
 
-    sh """docker inspect --format '{{ index .Config.Labels "org.label-schema.build-date"}}' ${docker_image} > time"""
+    sh "docker inspect --format '{{ index .Config.Labels "org.label-schema.build-date"}}' ${docker_image} > time"
 
-    sh """docker inspect --format '{{ index .Config.Labels "org.label-schema.description"}}' ${docker_image} > number"""
+    sh "docker inspect --format '{{ index .Config.Labels "org.label-schema.description"}}' ${docker_image} > number"
 
     version = readFile('versionnumber').trim()
     build_time = readFile('time').trim()
