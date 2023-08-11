@@ -46,66 +46,22 @@ void call(Map args = [:]) {
         build_qualifier = ''
     }
 
-    if (artifactUrlX64 == null || artifactUrlARM64 ==  null) {
-    echo 'Skipping docker build, one of x64 or arm64 artifacts was not built.'
-    } else {
-        echo 'Trigger docker-build'
-        dockerBuild: {
-            build job: 'docker-build',
+    buildDockerImage(
+        inputManifest: "manifests/${version}/${args.product}-${version}.yml",
+        buildNumber: "${build_number}",
+        buildOption: "${args.rerelease}",
+        artifactUrlX64: "${artifactUrlX64}",
+        artifactUrlArm64: "${artifactUrlARM64}"
+    )
+
+    echo 'Trigger docker-promote'
+    if(args.rerelease){
+        dockerPromote: {
+            build job: 'docker-promote',
             parameters: [
-                string(name: 'DOCKER_BUILD_GIT_REPOSITORY', value: 'https://github.com/opensearch-project/opensearch-build'),
-                string(name: 'DOCKER_BUILD_GIT_REPOSITORY_REFERENCE', value: 'main'),
-                string(name: 'DOCKER_BUILD_SCRIPT_WITH_COMMANDS', value: [
-                        'id',
-                        'pwd',
-                        'cd docker/release',
-                        "curl -sSL ${artifactUrlX64} -o ${args.product}-x64.tgz",
-                        "curl -sSL ${artifactUrlARM64} -o ${args.product}-arm64.tgz",
-                        [
-                            'bash',
-                            'build-image-multi-arch.sh',
-                            "-v ${inputManifest.build.version}${build_qualifier}",
-                            "-f ./dockerfiles/${args.product}.al2.dockerfile",
-                            "-p ${args.product}",
-                            "-a 'x64,arm64'",
-                            "-r opensearchstaging/${args.product}",
-                            "-t '${args.product}-x64.tgz,${args.product}-arm64.tgz'",
-                            "-n ${build_number}"
-                        ].join(' ')
-                ].join(' && ')),
+                string(name: 'SOURCE_IMAGES', value: "${args.product}:${inputManifest.build.version}${build_qualifier}.${build_number}.${build_date}"),
+                string(name: 'RELEASE_VERSION', value: "${version}")
             ]
-        }
-
-        echo 'Trigger docker-copy with tag build date '
-        if (args.rerelease) {
-            dockerCopy: {
-                build job: 'docker-copy',
-                parameters: [
-                    string(name: 'SOURCE_IMAGE_REGISTRY', value: 'opensearchstaging'),
-                    string(name: 'SOURCE_IMAGE', value: "${args.product}:${inputManifest.build.version}${build_qualifier}"),
-                    string(name: 'DESTINATION_IMAGE_REGISTRY', value: 'opensearchstaging'),
-                    string(name: 'DESTINATION_IMAGE', value: "${args.product}:${inputManifest.build.version}${build_qualifier}.${build_number}.${build_date}")
-                ]
-            }
-        }
-
-        echo "Trigger docker-scan for ${args.product} version ${inputManifest.build.version}${build_qualifier}"
-        dockerScan: {
-            build job: 'docker-scan',
-            parameters: [
-                string(name: 'IMAGE_FULL_NAME', value: "opensearchstaging/${args.product}:${inputManifest.build.version}${build_qualifier}")
-            ]
-        }
-
-        echo 'Trigger docker-promote'
-        if(args.rerelease){
-            dockerPromote: {
-                build job: 'docker-promote',
-                parameters: [
-                    string(name: 'SOURCE_IMAGES', value: "${args.product}:${inputManifest.build.version}${build_qualifier}.${build_number}.${build_date}"),
-                    string(name: 'RELEASE_VERSION', value: "${version}")
-                ]
-            }
         }
     }
 }
