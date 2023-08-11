@@ -49,7 +49,6 @@ void call(Map args = [:]) {
     buildDockerImage(
         inputManifest: "manifests/${version}/${args.product}-${version}.yml",
         buildNumber: "${build_number}",
-        buildDate: "${build_date}",
         buildOption: "${args.rerelease}",
         artifactUrlX64: "${artifactUrlX64}",
         artifactUrlArm64: "${artifactUrlARM64}"
