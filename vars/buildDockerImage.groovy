@@ -63,7 +63,7 @@ void call(Map args = [:]) {
                     string(name: 'SOURCE_IMAGE_REGISTRY', value: 'opensearchstaging'),
                     string(name: 'SOURCE_IMAGE', value: "${filename}:${inputManifest.build.version}${build_qualifier}"),
                     string(name: 'DESTINATION_IMAGE_REGISTRY', value: 'opensearchstaging'),
-                    string(name: 'DESTINATION_IMAGE', value: "${filename}:${inputManifest.build.version}${build_qualifier}${image_tag}")
+                    string(name: 'DESTINATION_IMAGE', value: "${filename}:${inputManifest.build.version}${build_qualifier}.${build_number}${image_tag}")
                 ]
             }
         }
