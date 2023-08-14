@@ -10,7 +10,7 @@
 void call(Map args = [:]) {
     def lib = library(identifier: 'jenkins@dockerpackerlib', retriever: legacySCM(scm))
     String docker_image = "opensearchproject/${args.product}:${args.tag}"
-    def build_number = args.buildNumber ?: "${BUILD_NUMBER}"
+    //def build_number = args.buildNumber ?: "${BUILD_NUMBER}"
 
     sh """#!/bin/bash
     set -e
