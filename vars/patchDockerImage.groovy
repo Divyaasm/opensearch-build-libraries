@@ -10,10 +10,10 @@
 void call(Map args = [:]) {
     def lib = library(identifier: 'jenkins@dockerpackerlib', retriever: legacySCM(scm))
     String docker_image = "opensearchproject/${args.product}:${args.tag}"
-    boolean tag_latest = "False"
+    boolean tag_latest = false
 
     if (args.tag == "2"){
-        tag_latest = "True"
+        tag_latest = true
        }
 
     sh """#!/bin/bash
@@ -61,7 +61,7 @@ void call(Map args = [:]) {
             build job: 'docker-promote',
             parameters: [
                 string(name: 'SOURCE_IMAGES', value: "${args.product}:${inputManifest.build.version}${build_qualifier}.${build_number}.${build_date}"),
-                string(name: 'RELEASE_VERSION', value: "${version}")
+                string(name: 'RELEASE_VERSION', value: "${version}"),
                 booleanParam(name: 'TAG_LATEST'), value: "${tag_latest}"
             ]
         }
