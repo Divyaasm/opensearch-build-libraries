@@ -56,7 +56,7 @@ void call(Map args = [:]) {
         }
 
         echo 'Trigger docker create tag with build number'
-        if (args.buildOption == "build_docker_with_build_number_tag" || args.buildOption) {
+        if (args.buildOption == "build_docker_with_build_number_tag" || args.buildOption == "re_release_docker_image") {
             dockerCopy: {
                 build job: 'docker-copy',
                 parameters: [
