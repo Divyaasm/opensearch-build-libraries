@@ -14,7 +14,7 @@ void call(Map args = [:]) {
 
     if (args.tag == "2"){
         tag_latest = true
-       }
+    }
 
     sh """#!/bin/bash
     set -e
@@ -62,7 +62,7 @@ void call(Map args = [:]) {
             parameters: [
                 string(name: 'SOURCE_IMAGES', value: "${args.product}:${inputManifest.build.version}${build_qualifier}.${build_number}.${build_date}"),
                 string(name: 'RELEASE_VERSION', value: "${version}"),
-                booleanParam(name: 'TAG_LATEST'), value: "${tag_latest}"
+                booleanParam(name: 'TAG_LATEST', value: "${tag_latest}")
             ]
         }
     }
