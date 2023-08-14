@@ -56,7 +56,6 @@ void call(Map args = [:]) {
             parameters: [
                 string(name: 'SOURCE_IMAGES', value: "${args.product}:${inputManifest.build.version}${build_qualifier}.${build_number}.${build_date}"),
                 string(name: 'RELEASE_VERSION', value: "${version}")
-                booleanParam(name: 'TAG_LATEST', value: "${tag_latest}")
             ]
         }
     }
