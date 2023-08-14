@@ -20,13 +20,13 @@ void call(Map args = [:]) {
     set -e
     set +x
     docker pull ${docker_image}
-    docker inspect --format '{{ index .Config.Labels "org.label-schema.version"}}' ${docker_image} > versionnumber
+    docker inspect --format '{{ index .Config.Labels "org.label-schema.version"}}' ${docker_image} > versionNumber
     docker inspect --format '{{ index .Config.Labels "org.label-schema.build-date"}}' ${docker_image} > time
-    docker inspect --format '{{ index .Config.Labels "org.label-schema.description"}}' ${docker_image} > number"""
+    docker inspect --format '{{ index .Config.Labels "org.label-schema.description"}}' ${docker_image} > buildNumber"""
 
-    version = readFile('versionnumber').trim()
+    version = readFile('versionNumber').trim()
     build_time = readFile('time').trim()
-    build_number = readFile('number').trim()
+    build_number = readFile('buildNumber').trim()
 
     def inputManifest = lib.jenkins.InputManifest.new(readYaml(file: "manifests/${version}/${args.product}-${version}.yml"))
 
@@ -55,7 +55,7 @@ void call(Map args = [:]) {
         artifactUrlArm64: "${artifactUrlARM64}"
     )
 
-    echo 'Trigger docker-promote'
+    echo 'Triggering docker-promote'
     if(args.rerelease == "re_release_docker_image"){
         dockerPromote: {
             build job: 'docker-promote',
