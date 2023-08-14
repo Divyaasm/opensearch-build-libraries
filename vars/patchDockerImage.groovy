@@ -10,7 +10,11 @@
 void call(Map args = [:]) {
     def lib = library(identifier: 'jenkins@dockerpackerlib', retriever: legacySCM(scm))
     String docker_image = "opensearchproject/${args.product}:${args.tag}"
-    def tag_latest = "True" if args.tag == "2" else "False"
+    boolean tag_latest = "False"
+
+    if (args.tag == "2"){
+        tag_latest = "True"
+       }
 
     sh """#!/bin/bash
     set -e
