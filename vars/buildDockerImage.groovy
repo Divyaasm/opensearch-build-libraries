@@ -11,9 +11,9 @@ void call(Map args = [:]) {
     def inputManifest = lib.jenkins.InputManifest.new(readYaml(file: args.inputManifest))
     def build_qualifier = inputManifest.build.qualifier
     def build_number = args.buildNumber ?: "${BUILD_NUMBER}"
-    String image_tag =""
+    String image_tag = ""
 
-    if (args.buildDate != null){
+    if (args.buildDate != null && args.buildDate != 'null'){
         image_tag = "." + "${args.buildDate}"
     }
 

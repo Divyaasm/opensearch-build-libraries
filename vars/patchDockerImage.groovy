@@ -10,11 +10,9 @@
 void call(Map args = [:]) {
     def lib = library(identifier: 'jenkins@dockerpackerlib', retriever: legacySCM(scm))
     String docker_image = "opensearchproject/${args.product}:${args.tag}"
+    String latest_docker_image = "opensearchproject/${args.product}:latest"
     boolean tag_latest = false
 
-    if (args.tag == "2"){
-        tag_latest = true
-    }
 
     sh """#!/bin/bash
     set -e
@@ -22,11 +20,16 @@ void call(Map args = [:]) {
     docker pull ${docker_image}
     docker inspect --format '{{ index .Config.Labels "org.label-schema.version"}}' ${docker_image} > versionNumber
     docker inspect --format '{{ index .Config.Labels "org.label-schema.build-date"}}' ${docker_image} > time
-    docker inspect --format '{{ index .Config.Labels "org.label-schema.description"}}' ${docker_image} > buildNumber"""
+    docker inspect --format '{{ index .Config.Labels "org.label-schema.description"}}' ${docker_image} > buildNumber
+
+    docker inspect --format '{{ index .Config.Labels "org.label-schema.version"}}' ${latest_docker_image} > latestVersionNumber
+
+    """
 
     version = readFile('versionNumber').trim()
     build_time = readFile('time').trim()
     build_number = readFile('buildNumber').trim()
+    latestVersionNumber = readFile('latestVersionNumber').trim()
 
     def inputManifest = lib.jenkins.InputManifest.new(readYaml(file: "manifests/${version}/${args.product}-${version}.yml"))
 
@@ -44,6 +47,10 @@ void call(Map args = [:]) {
     }
     else {
         build_qualifier = ''
+    }
+
+    if (latestVersionNumber == versionNumber){
+        tag_latest = true
     }
 
     buildDockerImage(
