@@ -28,7 +28,7 @@ void call(Map args = [:]) {
     version = readFile('versionNumber').trim()
     build_time = readFile('time').trim()
     build_number = readFile('buildNumber').trim()
-    latestVersionNumber = readFile('latestVersionNumber').trim()
+    latest_version = readFile('latestVersionNumber').trim()
 
     def inputManifest = lib.jenkins.InputManifest.new(readYaml(file: "manifests/${version}/${args.product}-${version}.yml"))
 
@@ -48,7 +48,7 @@ void call(Map args = [:]) {
         build_qualifier = ''
     }
 
-    if (latestVersionNumber == versionNumber){
+    if (latest_version == version){
         tag_latest = true
     }
 
