@@ -13,7 +13,6 @@
 @param Map[artifactUrlX64] <Required> - Url Path to X64 Tarball.
 @param Map[artifactUrlARM64] <Required> - Url Path to ARM64 Tarball.
 @param Map[buildOption] <Required> - Build Option for building the image with different options.
-
 */
 void call(Map args = [:]) {
     def lib = library(identifier: 'jenkins@dockerpackerlib', retriever: legacySCM(scm))

@@ -56,13 +56,13 @@ void call(Map args = [:]) {
         inputManifest: "manifests/${version}/${args.product}-${version}.yml",
         buildNumber: "${build_number}",
         buildDate: "${build_date}",
-        buildOption: "${args.rerelease}",
+        buildOption: "${args.re_release}",
         artifactUrlX64: "${artifactUrlX64}",
         artifactUrlArm64: "${artifactUrlARM64}"
     )
 
     echo 'Triggering docker-promote'
-    if(args.rerelease == "re_release_docker_image"){
+    if(args.re_release == "re_release_docker_image"){
         dockerPromote: {
             build job: 'docker-promote',
             propagate: true,
