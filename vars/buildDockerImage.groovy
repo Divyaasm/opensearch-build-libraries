@@ -6,6 +6,15 @@
  * this file be licensed under the Apache-2.0 license or a
  * compatible open source license.
  */
+/**
+@param Map[inputManifest] <Required> - path to Input Manifest.
+@param Map[buildNumber] <Required> - Build number of the corresponding Artifact.
+@param Map[buildDate] <Optional> - Date on which the artifacts were built.
+@param Map[artifactUrlX64] <Required> - Url Path to X64 Tarball.
+@param Map[artifactUrlARM64] <Required> - Url Path to ARM64 Tarball.
+@param Map[buildOption] <Required> - Build Option for building the image with different options.
+
+*/
 void call(Map args = [:]) {
     def lib = library(identifier: 'jenkins@dockerpackerlib', retriever: legacySCM(scm))
     def inputManifest = lib.jenkins.InputManifest.new(readYaml(file: args.inputManifest))
