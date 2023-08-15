@@ -31,6 +31,8 @@ void call(Map args = [:]) {
         echo 'Triggering docker-build'
         dockerBuild: {
             build job: 'docker-build',
+            propagate: true,
+            wait: true,
             parameters: [
                 string(name: 'DOCKER_BUILD_GIT_REPOSITORY', value: 'https://github.com/opensearch-project/opensearch-build'),
                 string(name: 'DOCKER_BUILD_GIT_REPOSITORY_REFERENCE', value: 'main'),
@@ -59,6 +61,8 @@ void call(Map args = [:]) {
         if (args.buildOption == "build_docker_with_build_number_tag" || args.buildOption == "re_release_docker_image") {
             dockerCopy: {
                 build job: 'docker-copy',
+                propagate: true,
+                wait: true,
                 parameters: [
                     string(name: 'SOURCE_IMAGE_REGISTRY', value: 'opensearchstaging'),
                     string(name: 'SOURCE_IMAGE', value: "${filename}:${inputManifest.build.version}${build_qualifier}"),
@@ -71,6 +75,8 @@ void call(Map args = [:]) {
         echo "Triggering docker-scan for ${filename} version ${inputManifest.build.version}${build_qualifier}"
         dockerScan: {
             build job: 'docker-scan',
+            propagate: true,
+            wait: true,
             parameters: [
                 string(name: 'IMAGE_FULL_NAME', value: "opensearchstaging/${filename}:${inputManifest.build.version}${build_qualifier}")
             ]

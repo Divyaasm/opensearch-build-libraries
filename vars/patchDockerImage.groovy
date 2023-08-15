@@ -59,6 +59,8 @@ void call(Map args = [:]) {
     if(args.rerelease == "re_release_docker_image"){
         dockerPromote: {
             build job: 'docker-promote',
+            propagate: true,
+            wait: true,
             parameters: [
                 string(name: 'SOURCE_IMAGES', value: "${args.product}:${inputManifest.build.version}${build_qualifier}.${build_number}.${build_date}"),
                 string(name: 'RELEASE_VERSION', value: "${version}"),
