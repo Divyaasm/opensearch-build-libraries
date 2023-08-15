@@ -18,6 +18,7 @@ void call(Map args = [:]) {
     set -e
     set +x
     docker pull ${docker_image}
+    docker pull ${latest_docker_image}
     docker inspect --format '{{ index .Config.Labels "org.label-schema.version"}}' ${docker_image} > versionNumber
     docker inspect --format '{{ index .Config.Labels "org.label-schema.build-date"}}' ${docker_image} > time
     docker inspect --format '{{ index .Config.Labels "org.label-schema.description"}}' ${docker_image} > buildNumber
