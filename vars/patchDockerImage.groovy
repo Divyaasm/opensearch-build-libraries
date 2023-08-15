@@ -21,9 +21,7 @@ void call(Map args = [:]) {
     docker inspect --format '{{ index .Config.Labels "org.label-schema.version"}}' ${docker_image} > versionNumber
     docker inspect --format '{{ index .Config.Labels "org.label-schema.build-date"}}' ${docker_image} > time
     docker inspect --format '{{ index .Config.Labels "org.label-schema.description"}}' ${docker_image} > buildNumber
-
     docker inspect --format '{{ index .Config.Labels "org.label-schema.version"}}' ${latest_docker_image} > latestVersionNumber
-
     """
 
     version = readFile('versionNumber').trim()
