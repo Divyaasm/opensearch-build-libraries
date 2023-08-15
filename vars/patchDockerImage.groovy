@@ -6,7 +6,12 @@
  * this file be licensed under the Apache-2.0 license or a
  * compatible open source license.
  */
-
+/**
+Library to support Docker Image Re-Release Automation
+@param Map[product] <Required> - Product type refers to opensearch or opensearch-dashboards.
+@param Map[tag] <Required> - Tag of the product that needs to be re-released.
+@param Map[re_release] <Optional> - This Build-Option can be checked to release the image after Docker-Build.
+*/
 void call(Map args = [:]) {
     def lib = library(identifier: 'jenkins@dockerpackerlib', retriever: legacySCM(scm))
     String docker_image = "opensearchproject/${args.product}:${args.tag}"
@@ -19,16 +24,23 @@ void call(Map args = [:]) {
     set +x
     docker pull ${docker_image}
     docker pull ${latest_docker_image}
-    docker inspect --format '{{ index .Config.Labels "org.label-schema.version"}}' ${docker_image} > versionNumber
-    docker inspect --format '{{ index .Config.Labels "org.label-schema.build-date"}}' ${docker_image} > time
-    docker inspect --format '{{ index .Config.Labels "org.label-schema.description"}}' ${docker_image} > buildNumber
-    docker inspect --format '{{ index .Config.Labels "org.label-schema.version"}}' ${latest_docker_image} > latestVersionNumber
     """
-
-    version = readFile('versionNumber').trim()
-    build_time = readFile('time').trim()
-    build_number = readFile('buildNumber').trim()
-    latest_version = readFile('latestVersionNumber').trim()
+    version = sh (
+            script: "docker inspect --format '{{ index .Config.Labels "org.label-schema.version"}}' ${docker_image}",
+            returnStdout: true
+    ).trim()
+    build_time = sh (
+            script: "docker inspect --format '{{ index .Config.Labels "org.label-schema.build-date"}}' ${docker_image}",
+            returnStdout: true
+    ).trim()
+    build_number = sh (
+            script: "docker inspect --format '{{ index .Config.Labels "org.label-schema.description"}}' ${docker_image}",
+            returnStdout: true
+    ).trim()
+    latest_version = sh (
+            script: "docker inspect --format '{{ index .Config.Labels "org.label-schema.version"}}' ${latest_docker_image}",
+            returnStdout: true
+    ).trim()
 
     def inputManifest = lib.jenkins.InputManifest.new(readYaml(file: "manifests/${version}/${args.product}-${version}.yml"))
 
