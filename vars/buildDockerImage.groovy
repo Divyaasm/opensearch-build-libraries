@@ -6,6 +6,7 @@
  * this file be licensed under the Apache-2.0 license or a
  * compatible open source license.
  */
+
 /**
 Library to build Docker Image with different Build Options
 @param Map[inputManifest] <Required> - Path to Input Manifest.

@@ -6,6 +6,7 @@
  * this file be licensed under the Apache-2.0 license or a
  * compatible open source license.
  */
+
 /**
 Library to support Docker Image Re-Release Automation
 @param Map[product] <Required> - Product type refers to opensearch or opensearch-dashboards.
@@ -18,13 +19,13 @@ void call(Map args = [:]) {
     String latest_docker_image = "opensearchproject/${args.product}:latest"
     boolean tag_latest = false
 
-
     sh """#!/bin/bash
     set -e
     set +x
     docker pull ${docker_image}
     docker pull ${latest_docker_image}
     """
+
     def version = sh (
             script: """docker inspect --format '{{ index .Config.Labels "org.label-schema.version"}}' ${docker_image}""",
             returnStdout: true
