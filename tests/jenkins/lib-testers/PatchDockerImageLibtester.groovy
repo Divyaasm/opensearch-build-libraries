@@ -31,7 +31,7 @@ class PatchDockerImageLibTester extends LibFunctionTester {
         binding.setVariable('version', "1.3.0")
         binding.setVariable('build_number', "123")
         binding.setVariable('latest_version', "2.5.0")
-        helper.addReadFileMock('time', '2023-06-19T19:12:59Z')
+        helper.addReadFileMock('datetime', '2023-06-19T19:12:59Z')
         helper.registerAllowedMethod('readYaml', [Map.class], { args ->
             return new Yaml().load((inputManifest as File).text)
         })

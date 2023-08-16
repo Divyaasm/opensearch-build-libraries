@@ -24,22 +24,26 @@ void call(Map args = [:]) {
     set +x
     docker pull ${docker_image}
     docker pull ${latest_docker_image}
-    docker inspect --format '{{ index .Config.Labels "org.label-schema.build-date"}}' ${docker_image} > time
+    docker inspect --format '{{ index .Config.Labels "org.label-schema.build-date"}}' ${docker_image} > datetime
     """
-    build_time = readFile('time').trim()
+    build_time = readFile('datetime').trim()
+    echo "${build_time}"
 
     version = sh (
             script: """docker inspect --format '{{ index .Config.Labels "org.label-schema.version"}}' ${docker_image}""",
             returnStdout: true
     ).trim()
+    echo "${version}"
     build_number = sh (
             script: """docker inspect --format '{{ index .Config.Labels "org.label-schema.description"}}' ${docker_image}""",
             returnStdout: true
     ).trim()
+    echo "${build_number}"
     latest_version = sh (
             script: """docker inspect --format '{{ index .Config.Labels "org.label-schema.version"}}' ${latest_docker_image}""",
             returnStdout: true
     ).trim()
+    echo "${latest_version}"
 
     def inputManifest = lib.jenkins.InputManifest.new(readYaml(file: "manifests/${version}/${args.product}-${version}.yml"))
 

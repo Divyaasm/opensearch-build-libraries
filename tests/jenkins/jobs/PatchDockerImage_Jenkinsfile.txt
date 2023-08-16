@@ -11,9 +11,9 @@
     set +x
     docker pull opensearchproject/null:null
     docker pull opensearchproject/null:latest
-    docker inspect --format '{{ index .Config.Labels "org.label-schema.build-date"}}' opensearchproject/null:null > time
+    docker inspect --format '{{ index .Config.Labels "org.label-schema.build-date"}}' opensearchproject/null:null > datetime
     )
-                  patchDockerImage.readFile(time)
+                  patchDockerImage.readFile(datetime)
                   patchDockerImage.sh({script=docker inspect --format '{{ index .Config.Labels "org.label-schema.version"}}' opensearchproject/null:null, returnStdout=true})
                   patchDockerImage.sh({script=docker inspect --format '{{ index .Config.Labels "org.label-schema.description"}}' opensearchproject/null:null, returnStdout=true})
                   patchDockerImage.sh({script=docker inspect --format '{{ index .Config.Labels "org.label-schema.version"}}' opensearchproject/null:latest, returnStdout=true})
