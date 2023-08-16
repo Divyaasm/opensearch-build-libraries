@@ -24,21 +24,19 @@ void call(Map args = [:]) {
     set +x
     docker pull ${docker_image}
     docker pull ${latest_docker_image}
+    docker inspect --format '{{ index .Config.Labels "org.label-schema.build-date"}}' ${docker_image} > time
     """
+    build_time = readFile('time').trim()
 
-    def version = sh (
+    version = sh (
             script: """docker inspect --format '{{ index .Config.Labels "org.label-schema.version"}}' ${docker_image}""",
             returnStdout: true
     ).trim()
-    def build_time = sh (
-            script: """docker inspect --format '{{ index .Config.Labels "org.label-schema.build-date"}}' ${docker_image}""",
-            returnStdout: true
-    ).trim()
-    def build_number = sh (
+    build_number = sh (
             script: """docker inspect --format '{{ index .Config.Labels "org.label-schema.description"}}' ${docker_image}""",
             returnStdout: true
     ).trim()
-    def latest_version = sh (
+    latest_version = sh (
             script: """docker inspect --format '{{ index .Config.Labels "org.label-schema.version"}}' ${latest_docker_image}""",
             returnStdout: true
     ).trim()
