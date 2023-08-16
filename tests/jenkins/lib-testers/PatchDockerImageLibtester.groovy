@@ -16,21 +16,22 @@ class PatchDockerImageLibTester extends LibFunctionTester {
 
     private String project
     private String version
-    private boolean rerelease
+    private boolean re_release
 
-    public PatchDockerImageLibTester(project, version, rerelease){
+    public PatchDockerImageLibTester(project, version, re_release){
         this.project = project
         this.version = version
-        this.rerelease = rerelease
+        this.re_release = re_release
     }
 
     void configure(helper, binding) {
         def inputManifest = "tests/data/opensearch-1.3.0.yml"
         binding.setVariable('MANIFEST', inputManifest)
 
-        helper.addReadFileMock('versionnumber', '1.3.0')
+        binding.setVariable('version', "1.3.0")
+        binding.setVariable('build_number', "123")
+        binding.setVariable('latest_version', "2.5.0")
         helper.addReadFileMock('time', '2023-06-19T19:12:59Z')
-        helper.addReadFileMock('number', '1880')
         helper.registerAllowedMethod('readYaml', [Map.class], { args ->
             return new Yaml().load((inputManifest as File).text)
         })
