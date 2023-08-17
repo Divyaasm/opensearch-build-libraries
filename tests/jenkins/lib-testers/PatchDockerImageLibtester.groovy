@@ -28,10 +28,18 @@ class PatchDockerImageLibTester extends LibFunctionTester {
         def inputManifest = "tests/data/opensearch-1.3.0.yml"
         binding.setVariable('MANIFEST', inputManifest)
 
-        helper.addReadFileMock('versionNumber', '1.3.0')
-        helper.addReadFileMock('number', '123')
-        helper.addReadFileMock('latestVersion', '2.5.0')
-        helper.addReadFileMock('dateTime', '2023-06-19T19:12:59Z')
+        helper.addShMock("""docker inspect --format '{{ index .Config.Labels "org.label-schema.version"}}' opensearchproject/opensearch:1""") { script ->
+            return [stdout: "1.3.0", exitValue: 0]
+        }
+        helper.addShMock("""docker inspect --format '{{ index .Config.Labels "org.label-schema.description"}}' opensearchproject/opensearch:1""") { script ->
+            return [stdout: "7756", exitValue: 0]
+        }
+        helper.addShMock("""docker inspect --format '{{ index .Config.Labels "org.label-schema.build-date"}}' opensearchproject/opensearch:1""") { script ->
+            return [stdout: "2023-06-19T19:12:59Z", exitValue: 0]
+        }
+        helper.addShMock("""docker inspect --format '{{ index .Config.Labels "org.label-schema.version"}}' opensearchproject/opensearch:latest""") { script ->
+            return [stdout: "2.5.0", exitValue: 0]
+        }
         helper.registerAllowedMethod('readYaml', [Map.class], { args ->
             return new Yaml().load((inputManifest as File).text)
         })
