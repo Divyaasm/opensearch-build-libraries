@@ -16,7 +16,7 @@ pipeline {
                     patchDockerImage(
                         product: "opensearch",
                         tag: "1",
-                        re_release: "re_release_docker_image"
+                        re_release: "true"
                     )
                 }
             }

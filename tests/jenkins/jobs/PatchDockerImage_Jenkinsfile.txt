@@ -3,7 +3,7 @@
          PatchDockerImage_Jenkinsfile.echo(Executing on agent [label:none])
          PatchDockerImage_Jenkinsfile.stage(Patch docker image, groovy.lang.Closure)
             PatchDockerImage_Jenkinsfile.script(groovy.lang.Closure)
-               PatchDockerImage_Jenkinsfile.patchDockerImage({product=opensearch, tag=1, re_release=re_release_docker_image})
+               PatchDockerImage_Jenkinsfile.patchDockerImage({product=opensearch, tag=1, re_release=true})
                   patchDockerImage.legacySCM(groovy.lang.Closure)
                   patchDockerImage.library({identifier=jenkins@dockerpackerlib, retriever=null})
                   patchDockerImage.sh(#!/bin/bash

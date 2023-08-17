@@ -18,6 +18,7 @@ void call(Map args = [:]) {
     String docker_image = "opensearchproject/${args.product}:${args.tag}"
     String latest_docker_image = "opensearchproject/${args.product}:latest"
     boolean tag_latest = false
+    String build_option = "build_docker_image"
 
     sh """#!/bin/bash
     set -e
@@ -65,17 +66,21 @@ void call(Map args = [:]) {
         tag_latest = true
     }
 
+    if (args.re_release){
+        build_option = "re_release_docker_image"
+    }
+
     buildDockerImage(
         inputManifest: "manifests/${version}/${args.product}-${version}.yml",
         buildNumber: "${build_number}",
         buildDate: "${build_date}",
-        buildOption: "${args.re_release}",
+        buildOption: "${build_option}",
         artifactUrlX64: "${artifactUrlX64}",
         artifactUrlArm64: "${artifactUrlARM64}"
     )
 
     echo 'Triggering docker-promote'
-    if(args.re_release == "re_release_docker_image"){
+    if(args.re_release){
         dockerPromote: {
             build job: 'docker-promote',
             propagate: true,
