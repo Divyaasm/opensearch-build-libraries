@@ -79,10 +79,10 @@ void call(Map args = [:]) {
         artifactUrlArm64: "${artifactUrlARM64}"
     )
 
-    echo 'Triggering docker-promote'
+    echo 'Triggering docker-promotion'
     if(args.re_release){
         dockerPromote: {
-            build job: 'docker-promote',
+            build job: 'docker-promotion',
             propagate: true,
             wait: true,
             parameters: [
