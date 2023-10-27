@@ -32,7 +32,7 @@ void call(Map args = [:]) {
             returnStdout: true
     ).trim()
     def build_time = sh (
-            script: """docker inspect --format '{{ index .Config.Labels "org.label-schema.build-date"}}' ${docker_image}""",
+            script: """date +%Y%m%d""",
             returnStdout: true
     ).trim()
     def build_number = sh (
@@ -51,7 +51,7 @@ void call(Map args = [:]) {
     artifactUrlARM64 = "https://ci.opensearch.org/ci/dbc/distribution-build-${args.product}/${version}/${build_number}/linux/arm64/tar/dist/${args.product}/${args.product}-${version}-linux-arm64.tar.gz"
 
     //slice the build-date value (For Example: 2023-08-11T02:17:43Z -> 20230811)
-    build_date = build_time[0..3] + build_time[5..6] + build_time[8..9]
+    build_date = build_time[0..3] + build_time[4..5] + build_time[6..7]
 
     def build_qualifier = inputManifest.build.qualifier
 
