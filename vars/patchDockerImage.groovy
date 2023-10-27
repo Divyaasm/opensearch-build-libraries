@@ -50,6 +50,7 @@ void call(Map args = [:]) {
 
     artifactUrlARM64 = "https://ci.opensearch.org/ci/dbc/distribution-build-${args.product}/${version}/${build_number}/linux/arm64/tar/dist/${args.product}/${args.product}-${version}-linux-arm64.tar.gz"
 
+    echo "${build_time}"
     //slice the build-date value (For Example: 2023-08-11T02:17:43Z -> 20230811)
     build_date = build_time[0..3] + build_time[4..5] + build_time[6..7]
 
