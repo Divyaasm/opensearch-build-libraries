@@ -10,7 +10,7 @@ void call(Map args = [:]) {
     def latestBuildData = ['latest': "${BUILD_NUMBER}"]
     writeJSON file: 'index.json', json: latestBuildData
 
-    withCredentials([string(credentialsId: 'test-jenkins-artifact-bucket-name', variable: 'ARTIFACT_BUCKET_NAME')]) {
+    withCredentials([string(credentialsId: 'jenkins-artifact-bucket-name', variable: 'ARTIFACT_BUCKET_NAME')]) {
         echo "Uploading index.json to s3://${ARTIFACT_BUCKET_NAME}/${args.indexFilePath}"
 
         uploadToS3(
