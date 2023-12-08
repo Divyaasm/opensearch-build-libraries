@@ -15,11 +15,6 @@ def call(Map args = [:]) {
     String buildManifest = "${args.distribution}/builds/${inputManifestObj.build.getFilename()}/manifest.yml"
     def buildManifestObj = lib.jenkins.BuildManifest.new(readYaml(file: buildManifest))
 
-    assembleUpload(
-        args + [
-            buildManifest: buildManifest,
-        ]
-    )
 
     return buildManifestObj
 }
