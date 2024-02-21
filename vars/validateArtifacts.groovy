@@ -16,13 +16,22 @@ void call(Map args = [:]) {
         println("Validation.sh script not found in the workspace: ${WORKSPACE}, exit 1")
         System.exit(1)
     }
-    String arguments = generateArguments(args)
-    sh "${WORKSPACE}/validation.sh ${arguments}"
-}
 
-String generateArguments(args) {
-    String arguments = ''
-    // generate of command line arguments
-    args.each { key, value -> arguments += " --${key } ${value }" }
-    return arguments
+    sh(([
+        '${WORKSPACE}/validation.sh',
+        args.version ? "--version ${args.version}" : null,
+        args."file-path" ? "--file-path ${args.file-path}" : null,
+        args.distribution ? "-d ${args.distribution}" : null,
+        args.platform ? "-p ${args.platform}" : null,
+        args.arch ? "-a ${args.arch}" : null,
+        args.projects ? "--projects ${args.projects}" : null,
+        args."docker-source" ? "--docker-source ${args.docker-source}" : null,
+        args."os-build-number" ? "--os-build-number ${args.os-build-number}" : null,
+        args."osd-build-number" ? "--osd-build-number ${args.osd-build-number}" : null,
+        args."artifact-type" ? "--artifact-type ${args.artifact-type}" : null,
+        args."allow-http" ? '--allow-http' : null,
+        args."validate-digest-only" ? '--validate-digest-only' : null,
+        args."using-staging-artifact-only" ? '--using-staging-artifact-only' : null
+    ].join(' '))
+
 }
