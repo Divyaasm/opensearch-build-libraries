@@ -29,7 +29,7 @@ void call(Map args = [:]) {
         args.os_build_number ? "--os-build-number ${args.os_build_number}" : "",
         args.osd_build_number ? "--osd-build-number ${args.osd_build_number}" : "",
         args.artifact_type ? "--artifact-type ${args.artifact_type}" : "",
-        args.allow_http ? '--allow_http' : "",
+        args.allow_http ? '--allow-http' : "",
         args.docker_args ? "${args.artifact_type}" : "",
     ].join(' '))
 }
