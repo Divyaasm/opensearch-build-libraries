@@ -17,7 +17,7 @@ void call(Map args = [:]) {
         System.exit(1)
     }
 
-    sh(([
+    sh([
         '${WORKSPACE}/validation.sh',
         args.version ? "--version ${args.version}" : null,
         args."file-path" ? "--file-path ${args.file-path}" : null,
@@ -33,5 +33,4 @@ void call(Map args = [:]) {
         args."validate-digest-only" ? '--validate-digest-only' : null,
         args."using-staging-artifact-only" ? '--using-staging-artifact-only' : null
     ].join(' '))
-
 }
