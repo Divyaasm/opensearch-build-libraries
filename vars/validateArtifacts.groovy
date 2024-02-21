@@ -16,6 +16,8 @@ void call(Map args = [:]) {
         println("Validation.sh script not found in the workspace: ${WORKSPACE}, exit 1")
         System.exit(1)
     }
+    else {
+        println("Script file exists")}
 
     sh([
         '${WORKSPACE}/validation.sh',
