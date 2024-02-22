@@ -31,5 +31,5 @@ void call(Map args = [:]) {
         args.artifact_type ? "--artifact-type ${args.artifact_type}" : "",
         args.allow_http ? '--allow-http' : "",
         args.docker_args ? "${args.artifact_type}" : "",
-    ].join(' '))
+    ].join(' ').trim())
 }
