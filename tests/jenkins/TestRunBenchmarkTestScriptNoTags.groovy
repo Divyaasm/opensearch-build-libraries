@@ -24,6 +24,7 @@ class TestRunBenchmarkTestScriptNoManifest extends BuildPipelineTest {
                 '',
                 'https://www.exmaple.com/example.tar.gz',
                 '3.0.0',
+                '',
                 'true',
                 'nyc_taxis',
                 'true',

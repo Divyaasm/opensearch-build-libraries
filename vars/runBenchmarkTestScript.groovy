@@ -80,6 +80,7 @@ void call(Map args = [:]) {
             isNullOrEmpty(args.endpoint.toString()) ? "" : "--cluster-endpoint ${args.endpoint}",
             isNullOrEmpty(args.endpoint.toString()) ? "--config ${WORKSPACE}/config.yml" : "",
             "--workload ${args.workload}",
+            "--benchmark-config ${WORKSPACE}/benchmark.ini",
             "--user-tag ${userTags}",
             args.insecure.toBoolean() ? "--without-security" : "",
             args.singleNode.toBoolean() ? "--single-node" : "",

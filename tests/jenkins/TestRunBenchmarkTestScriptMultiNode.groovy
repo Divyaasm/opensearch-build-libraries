@@ -24,6 +24,7 @@ class TestRunBenchmarkTestScriptMultiNode extends BuildPipelineTest {
                 'tests/data/opensearch-1.3.0-bundle.yml',
                 '',
                 '',
+                '',
                 'true',
                 'nyc_taxis',
                 'false',

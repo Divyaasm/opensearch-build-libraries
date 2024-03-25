@@ -14,6 +14,7 @@ class RunBenchmarkTestScriptLibTester extends LibFunctionTester{
     private String bundleManifest
     private String distributionUrl
     private String distributionVersion
+    private String endpoint
     private String insecure
     private String workload
     private String singleNode
@@ -40,13 +41,14 @@ class RunBenchmarkTestScriptLibTester extends LibFunctionTester{
     private String captureSegmentReplicationStat
     private String telemetryParams
 
-    public RunBenchmarkTestScriptLibTester(bundleManifest, distributionUrl, distributionVersion, insecure, workload, singleNode, minDistribution, use50PercentHeap,
+    public RunBenchmarkTestScriptLibTester(bundleManifest, distributionUrl, distributionVersion, endpoint, insecure, workload, singleNode, minDistribution, use50PercentHeap,
                                            enableRemoteStore, managerNodeCount, dataNodeCount, dataInstanceType, userTag, workloadParams,
                                            testProcedure, excludeTasks, includeTasks,
                                            additionalConfig, captureNodeStat, captureSegmentReplicationStat, telemetryParams){
         this.bundleManifest = bundleManifest
         this.distributionUrl = distributionUrl
         this.distributionVersion = distributionVersion
+        this.endpoint = endpoint
         this.insecure = insecure
         this.workload = workload
         this.singleNode = singleNode
@@ -128,6 +130,7 @@ class RunBenchmarkTestScriptLibTester extends LibFunctionTester{
         binding.setVariable('DISTRIBUTION_URL', distributionUrl)
         binding.setVariable('DISTRIBUTION_VERSION', distributionVersion)
         binding.setVariable('BUNDLE_MANIFEST_URL', 'test://artifact.url')
+        binding.setVariable('CLUSTER_ENDPOINT', endpoint)
         binding.setVariable('GITHUB_BOT_TOKEN_NAME', 'bot_token_name')
         binding.setVariable('GITHUB_USER', 'test_user')
         binding.setVariable('GITHUB_TOKEN', 'test_token')
