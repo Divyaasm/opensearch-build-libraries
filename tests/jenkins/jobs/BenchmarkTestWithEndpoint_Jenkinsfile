@@ -47,42 +47,6 @@ pipeline {
                         }
                     }
                 }
-                stage('test-without-security') {
-                    steps {
-                        script {
-                            runBenchmarkTestScript(bundleManifest: BUNDLE_MANIFEST,
-                            distributionUrl: DISTRIBUTION_URL,
-                            distributionVersion: DISTRIBUTION_VERSION,
-                            endpoint: CLUSTER_ENDPOINT,
-                            insecure: "true",
-                            workload: TEST_WORKLOAD,
-                            singleNode: SINGLE_NODE_CLUSTER,
-                            minDistribution: MIN_DISTRIBUTION,
-                            use50PercentHeap: USE_50_PERCENT_HEAP,
-                            enableRemoteStore: ENABLE_REMOTE_STORE,
-                            suffix: "${env.BUILD_NUMBER}",
-                            managerNodeCount: MANAGER_NODE_COUNT,
-                            dataNodeCount: DATA_NODE_COUNT,
-                            clientNodeCount: CLIENT_NODE_COUNT,
-                            ingestNodeCount: INGEST_NODE_COUNT,
-                            mlNodeCount: ML_NODE_COUNT,
-                            dataInstanceType: DATA_INSTANCE_TYPE,
-                            userTag: USER_TAGS.isEmpty() ? "security-enabled:false" : "${USER_TAGS},security-enabled:false",
-                            workloadParams: WORKLOAD_PARAMS,
-                            testProcedure: TEST_PROCEDURE,
-                            excludeTasks: EXCLUDE_TASKS,
-                            includeTasks: INCLUDE_TASKS,
-                            additionalConfig: ADDITIONAL_CONFIG,
-                            dataStorageSize: DATA_NODE_STORAGE,
-                            mlStorageSize: ML_NODE_STORAGE,
-                            jvmSysProps: JVM_SYS_PROPS,
-                            captureNodeStat: CAPTURE_NODE_STAT,
-                            captureSegmentReplicationStat: CAPTURE_SEGMENT_REPLICATION_STAT,
-                            telemetryParams: TELEMETRY_PARAMS
-                            )
-                        }
-                    }
-                }
             }
         }
     }
