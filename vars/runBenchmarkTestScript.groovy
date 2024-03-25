@@ -49,10 +49,26 @@ void call(Map args = [:]) {
 
     config_name = isNullOrEmpty(args.config) ? 'config.yml' : args.config
     benchmark_config = 'benchmark.ini'
+    withCredentials([string(credentialsId: 'jenkins-aws-account-public', variable: 'AWS_ACCOUNT_PUBLIC'),
+                     string(credentialsId: 'jenkins-artifact-bucket-name', variable: 'ARTIFACT_BUCKET_NAME')]) {
+        withAWS(role: 'opensearch-test', roleAccount: "${AWS_ACCOUNT_PUBLIC}", duration: 900, roleSessionName: 'jenkins-session') {
+            if(isNullOrEmpty(args.endpoint.toString())) {
+                s3Download(file: 'config.yml', bucket: "${ARTIFACT_BUCKET_NAME}", path: "${BENCHMARK_TEST_CONFIG_LOCATION}/${config_name}", force: true)
+            }
+            s3Download(file: 'benchmark.ini', bucket: "${ARTIFACT_BUCKET_NAME}", path: "${BENCHMARK_TEST_CONFIG_LOCATION}/${benchmark_config}", force: true)
 
-    if (buildManifest != null) {
-        editBenchmarkConfig("${WORKSPACE}/benchmark.ini")
+            /*Added sleep to let the file get downloaded first before write happens. Without the sleep the write is
+            happening in parallel to download resulting in file not found error. To avoid pip install conflict errors
+            when runnin with and without security run in parallel add enough gap between execution.
+             */
+            if (args.insecure.toBoolean()) {
+                sleep(5)
+            } else {
+                sleep(120)
+            }
+        }
     }
+    editBenchmarkConfig("${WORKSPACE}/benchmark.ini")
     String userTags = getMetadataTags(args.userTag.toString(), buildManifest)
 
     sh([
