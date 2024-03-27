@@ -106,7 +106,6 @@ void call(Map args = [:]) {
             isNullOrEmpty(args.jvmSysProps) ? "" : "--jvm-sys-props ${args.jvmSysProps}",
             isNullOrEmpty(args.telemetryParams) ? "" : "--telemetry-params '${args.telemetryParams}'"
     ].join(' ').trim())
-
 }
 
 void editBenchmarkConfig(String config_file) {
