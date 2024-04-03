@@ -71,7 +71,7 @@ void call(Map args = [:]) {
     editBenchmarkConfig("${WORKSPACE}/benchmark.ini")
     String userTags = getMetadataTags(args.userTag.toString(), buildManifest)
 
-    sh([
+    def command = [
             './test.sh',
             'benchmark-test',
             isNullOrEmpty(args.bundleManifest) ? "" : "--bundle-manifest ${args.bundleManifest}",
@@ -105,7 +105,8 @@ void call(Map args = [:]) {
             isNullOrEmpty(args.mlStorageSize) ? "" : "--ml-node-storage ${args.mlStorageSize}",
             isNullOrEmpty(args.jvmSysProps) ? "" : "--jvm-sys-props ${args.jvmSysProps}",
             isNullOrEmpty(args.telemetryParams) ? "" : "--telemetry-params '${args.telemetryParams}'"
-    ].join(' ').trim())
+    ].join(' ').trim()
+    sh """set +x && ${command}"""
 }
 
 void editBenchmarkConfig(String config_file) {
