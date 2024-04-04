@@ -83,6 +83,8 @@ void call(Map args = [:]) {
             "--benchmark-config ${WORKSPACE}/benchmark.ini",
             "--user-tag ${userTags}",
             args.insecure?.toBoolean() ? "--without-security" : "",
+            isNullOrEmpty(args.username) ? "" : "--username"
+            isNullOrEmpty(args.password) ? "" : "--password"
             args.singleNode?.toBoolean() ? "--single-node" : "",
             args.minDistribution?.toBoolean() ? "--min-distribution" : "",
             args.use50PercentHeap?.toBoolean() ? "--use-50-percent-heap" : "",
