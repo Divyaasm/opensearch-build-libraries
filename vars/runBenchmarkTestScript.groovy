@@ -109,7 +109,7 @@ void call(Map args = [:]) {
         isNullOrEmpty(args.telemetryParams) ? "" : "--telemetry-params '${args.telemetryParams}'"
     ].join(' ').trim()
 
-    sh """set +x ${command}"""
+    sh """set +x && ${command}"""
 
 }
 
