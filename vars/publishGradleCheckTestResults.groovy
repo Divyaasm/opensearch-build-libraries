@@ -23,7 +23,7 @@ void call(Map args = [:]) {
     def lib = library(identifier: 'jenkins@main', retriever: legacySCM(scm))
     def finalJsonDoc = ""
     def buildNumber = currentBuild.number
-    def buildDescription = currentBuild.description
+//    def buildDescription = currentBuild.description
     def buildDuration = currentBuild.duration
     def buildResult = currentBuild.result
     def buildStartTime = currentBuild.startTimeInMillis
@@ -36,14 +36,16 @@ void call(Map args = [:]) {
     def formattedDate = new SimpleDateFormat("MM-yyyy").format(currentDate)
 
     def indexName = "gradle-check-${formattedDate}"
-
+    println("Print 1")
     def test_docs = getFailedTestRecords(buildNumber, prNumber, invokeType, prOwner, prTitle, gitReference, buildResult, buildDuration, buildStartTime)
-
+    println("Print 3")
     if (test_docs) {
+        println("Print 4")
         for (doc in test_docs) {
             def jsonDoc = JsonOutput.toJson(doc)
             finalJsonDoc += "{\"index\": {\"_index\": \"${indexName}\"}}\n" + "${jsonDoc}\n"
         }
+        println("Print 5")
         writeFile file: "failed-test-records.json", text: finalJsonDoc
 
         def fileContents = readFile(file: "failed-test-records.json").trim()
@@ -55,7 +57,9 @@ void call(Map args = [:]) {
 List<Map<String, String>> getFailedTestRecords(buildNumber, prNumber, invokeType, prOwner, prTitle, gitReference, buildResult, buildDuration, buildStartTime) {
     def testResults = []
     AbstractTestResultAction testResultAction = currentBuild.rawBuild.getAction(AbstractTestResultAction.class)
+    println("Print 2 1")
     if (testResultAction != null) {
+        println("Print 2 2")
         def testsTotal = testResultAction.totalCount
         def testsFailed = testResultAction.failCount
         def testsSkipped = testResultAction.skipCount
