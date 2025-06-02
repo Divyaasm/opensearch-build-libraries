@@ -17,7 +17,7 @@
 import hudson.tasks.test.AbstractTestResultAction
 import groovy.json.JsonOutput
 import java.text.SimpleDateFormat
-import java.util.Date
+//import java.util.Date
 
 void call(Map args = [:]) {
     def lib = library(identifier: 'jenkins@main', retriever: legacySCM(scm))
@@ -48,7 +48,7 @@ void call(Map args = [:]) {
 
         def fileContents = readFile(file: "failed-test-records.json").trim()
         println("File Content is:\n${fileContents}")
-        indexFailedTestData()
+//        indexFailedTestData()
     }
 }
 
