@@ -33,11 +33,11 @@ void call(Map args = [:]) {
     def prTitle = args.prTitle.toString()
     def gitReference = args.gitReference.toString()
     def currentDate = new Date()
-    def formattedDate = new SimpleDateFormat("MM-yyyy").format(currentDate)
+    def formattedDate = new SimpleDateFormat("dd-MM-yyyy").format(currentDate)
 
     def indexName = "gradle-check-${formattedDate}"
     println("Print 1")
-    def test_docs = getFailedTestRecords(buildNumber, prNumber, invokeType, prOwner, prTitle, gitReference, buildResult, buildDuration, buildStartTime)
+    def test_docs = getFailedTestRecords(buildNumber, prNumber, invokeType, prOwner, prTitle, gitReference, buildResult, buildDuration, buildStartTime, formattedDate)
     println("Print 3")
     if (test_docs) {
         println("Print 4")
@@ -54,7 +54,7 @@ void call(Map args = [:]) {
     }
 }
 
-List<Map<String, String>> getFailedTestRecords(buildNumber, prNumber, invokeType, prOwner, prTitle, gitReference, buildResult, buildDuration, buildStartTime) {
+List<Map<String, String>> getFailedTestRecords(buildNumber, prNumber, invokeType, prOwner, prTitle, gitReference, buildResult, buildDuration, buildStartTime, formattedDate) {
     def testResults = []
     AbstractTestResultAction testResultAction = currentBuild.rawBuild.getAction(AbstractTestResultAction.class)
     println("Print 2 1")
@@ -68,7 +68,7 @@ List<Map<String, String>> getFailedTestRecords(buildNumber, prNumber, invokeType
 
         if (failedTests){
             for (test in failedTests) {
-                def failDocument = ['build_number': buildNumber, 'pull_request': prNumber, 'pull_request_owner': prOwner , 'invoke_type': invokeType, 'pull_request_title': prTitle, 'git_reference': gitReference, 'test_class': test.getParent().getName(), 'test_name': test.fullName, 'test_status': 'FAILED', 'build_result': buildResult, 'test_fail_count': testsFailed, 'test_skipped_count': testsSkipped, 'test_passed_count': testsPassed, 'build_duration': buildDuration, 'build_start_time': buildStartTime]
+                def failDocument = ['build_number': buildNumber, 'pull_request': prNumber, 'pull_request_owner': prOwner , 'invoke_type': invokeType, 'pull_request_title': prTitle, 'git_reference': gitReference, 'test_class': test.getParent().getName(), 'test_name': test.fullName, 'test_status': 'FAILED', 'build_result': buildResult, 'test_fail_count': testsFailed, 'test_skipped_count': testsSkipped, 'test_passed_count': testsPassed, 'build_duration': buildDuration, 'build_start_time': buildStartTime, 'build_date': formattedDate]
                 testResults.add(failDocument)
             }
         } else {
@@ -93,7 +93,7 @@ void indexFailedTestData() {
                 set +e
                 set +x
         
-                MONTH_YEAR=\$(date +"%m-%Y")
+                MONTH_YEAR=\$(date +"%d-%m-%Y")  // update date in index
                 INDEX_NAME="gradle-check-\$MONTH_YEAR"
                 INDEX_MAPPING='{
                     "mappings": {
