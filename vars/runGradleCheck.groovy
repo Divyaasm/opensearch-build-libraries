@@ -78,7 +78,8 @@ void call(Map args = [:]) {
 
                 echo "Start gradlecheck"
                 GRADLE_CHECK_STATUS=0
-                ./gradlew clean && ./gradlew ':libs:opensearch-ssl-config:test' --tests "org.opensearch.common.ssl.PemTrustConfigTests.testTrustConfigReloadsFileContents" -Dtests.seed=A3D0440B6487A417 -Dtests.coverage=true ${bwc_checkout_align_param} --no-daemon --no-scan || GRADLE_CHECK_STATUS=1
+                ./gradlew clean && ./gradlew check -Dtests.coverage=true ${bwc_checkout_align_param} --no-daemon --no-scan || GRADLE_CHECK_STATUS=1
+//                ./gradlew clean && ./gradlew ':libs:opensearch-ssl-config:test' --tests "org.opensearch.common.ssl.PemTrustConfigTests.testTrustConfigReloadsFileContents" -Dtests.seed=A3D0440B6487A417 -Dtests.coverage=true ${bwc_checkout_align_param} --no-daemon --no-scan || GRADLE_CHECK_STATUS=1
 
                 if [ "\$GRADLE_CHECK_STATUS" != 0 ]; then
                     echo Gradle Check Failed!
