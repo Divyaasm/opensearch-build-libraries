@@ -17,27 +17,21 @@
 import hudson.tasks.test.AbstractTestResultAction
 import groovy.json.JsonOutput
 import java.text.SimpleDateFormat
-//import java.util.Date
 
 void call(Map args = [:]) {
     def lib = library(identifier: 'jenkins@main', retriever: legacySCM(scm))
     def finalJsonDoc = ""
     def buildNumber = currentBuild.number
-//    def buildDescription = currentBuild.description
     def buildDuration = currentBuild.duration
     def buildResult = currentBuild.result
     def buildStartTime = currentBuild.startTimeInMillis
-    def prNumber = args.prNumber.toString()
-    def invokeType = args.invokeType.toString()
-    def prOwner = args.prOwner.toString()
-    def prTitle = args.prTitle.toString()
     def gitReference = args.gitReference.toString()
     def currentDate = new Date()
     def formattedDate = new SimpleDateFormat("dd-MM-yyyy").format(currentDate)
 
-    def indexName = "gradle-check-${formattedDate}"
+    def indexName = "gradle-test-flaky-${formattedDate}"
     println("Print 1")
-    def test_docs = getFailedTestRecords(buildNumber, prNumber, invokeType, prOwner, prTitle, gitReference, buildResult, buildDuration, buildStartTime, formattedDate)
+    def test_docs = getFailedTestRecords(buildNumber, gitReference, buildResult, buildDuration, buildStartTime, formattedDate)
     println("Print 3")
     if (test_docs) {
         println("Print 4")
@@ -54,7 +48,7 @@ void call(Map args = [:]) {
     }
 }
 
-List<Map<String, String>> getFailedTestRecords(buildNumber, prNumber, invokeType, prOwner, prTitle, gitReference, buildResult, buildDuration, buildStartTime, formattedDate) {
+List<Map<String, String>> getFailedTestRecords(buildNumber, gitReference, buildResult, buildDuration, buildStartTime, formattedDate) {
     def testResults = []
     AbstractTestResultAction testResultAction = currentBuild.rawBuild.getAction(AbstractTestResultAction.class)
     println("Print 2 1")
@@ -68,7 +62,7 @@ List<Map<String, String>> getFailedTestRecords(buildNumber, prNumber, invokeType
 
         if (failedTests){
             for (test in failedTests) {
-                def failDocument = ['build_number': buildNumber, 'pull_request': prNumber, 'pull_request_owner': prOwner , 'invoke_type': invokeType, 'pull_request_title': prTitle, 'git_reference': gitReference, 'test_class': test.getParent().getName(), 'test_name': test.fullName, 'test_status': 'FAILED', 'build_result': buildResult, 'test_fail_count': testsFailed, 'test_skipped_count': testsSkipped, 'test_passed_count': testsPassed, 'build_duration': buildDuration, 'build_start_time': buildStartTime, 'build_date': formattedDate]
+                def failDocument = ['build_number': buildNumber, 'git_reference': gitReference, 'test_class': test.getParent().getName(), 'test_name': test.fullName, 'test_status': 'FAILED', 'build_result': buildResult, 'test_fail_count': testsFailed, 'test_skipped_count': testsSkipped, 'test_passed_count': testsPassed, 'build_duration': buildDuration, 'build_start_time': buildStartTime, 'build_date': formattedDate]
                 testResults.add(failDocument)
             }
         } else {
