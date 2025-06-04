@@ -202,7 +202,3 @@ void indexFailedTestData() {
                 fi
         """
 }
-
-
-
-boolean isNullOrEmpty(String str) { return (str == 'Null' || str == null || str.allWhitespace || str.isEmpty()) }
