@@ -17,22 +17,27 @@
 import hudson.tasks.test.AbstractTestResultAction
 import groovy.json.JsonOutput
 import java.text.SimpleDateFormat
+//import java.util.Date
 
 void call(Map args = [:]) {
     def lib = library(identifier: 'jenkins@main', retriever: legacySCM(scm))
     def finalJsonDoc = ""
     def buildNumber = currentBuild.number
-    def buildDescription = currentBuild.description
+//    def buildDescription = currentBuild.description
     def buildDuration = currentBuild.duration
     def buildResult = currentBuild.result
     def buildStartTime = currentBuild.startTimeInMillis
+    def prNumber = args.prNumber.toString()
+    def invokeType = args.invokeType.toString()
+    def prOwner = args.prOwner.toString()
+    def prTitle = args.prTitle.toString()
     def gitReference = args.gitReference.toString()
     def currentDate = new Date()
     def formattedDate = new SimpleDateFormat("dd-MM-yyyy").format(currentDate)
 
-    def indexName = "gradle-flaky-test-${formattedDate}"
+    def indexName = "gradle-check-${formattedDate}"
     println("Print 1")
-    def test_docs = getFailedTestRecords(buildNumber, gitReference, buildResult, buildDuration, buildStartTime, formattedDate)
+    def test_docs = getFailedTestRecords(buildNumber, prNumber, invokeType, prOwner, prTitle, gitReference, buildResult, buildDuration, buildStartTime, formattedDate)
     println("Print 3")
     if (test_docs) {
         println("Print 4")
@@ -45,11 +50,11 @@ void call(Map args = [:]) {
 
         def fileContents = readFile(file: "failed-test-records.json").trim()
         println("File Content is:\n${fileContents}")
-        indexFailedTestData()
+//        indexFailedTestData()
     }
 }
 
-List<Map<String, String>> getFailedTestRecords(buildNumber, gitReference, buildResult, buildDuration, buildStartTime, formattedDate) {
+List<Map<String, String>> getFailedTestRecords(buildNumber, prNumber, invokeType, prOwner, prTitle, gitReference, buildResult, buildDuration, buildStartTime, formattedDate) {
     def testResults = []
     AbstractTestResultAction testResultAction = currentBuild.rawBuild.getAction(AbstractTestResultAction.class)
     println("Print 2 1")
@@ -63,7 +68,7 @@ List<Map<String, String>> getFailedTestRecords(buildNumber, gitReference, buildR
 
         if (failedTests){
             for (test in failedTests) {
-                def failDocument = ['build_number': buildNumber, 'build_date': formattedDate, 'git_reference': gitReference, 'test_class': test.getParent().getName(), 'test_name': test.fullName, 'test_status': 'FAILED', 'build_result': buildResult, 'test_fail_count': testsFailed, 'test_skipped_count': testsSkipped, 'test_passed_count': testsPassed, 'build_duration': buildDuration, 'build_start_time': buildStartTime]
+                def failDocument = ['build_number': buildNumber, 'pull_request': prNumber, 'pull_request_owner': prOwner , 'invoke_type': invokeType, 'pull_request_title': prTitle, 'git_reference': gitReference, 'test_class': test.getParent().getName(), 'test_name': test.fullName, 'test_status': 'FAILED', 'build_result': buildResult, 'test_fail_count': testsFailed, 'test_skipped_count': testsSkipped, 'test_passed_count': testsPassed, 'build_duration': buildDuration, 'build_start_time': buildStartTime, 'build_date': formattedDate]
                 testResults.add(failDocument)
             }
         } else {
@@ -88,16 +93,13 @@ void indexFailedTestData() {
                 set +e
                 set +x
         
-                MONTH_YEAR=\$(date +"%m-%Y")
-                INDEX_NAME="gradle-flaky-test-\$MONTH_YEAR"
+                MONTH_YEAR=\$(date +"%m-%Y")  // update date in index
+                INDEX_NAME="gradle-check-\$MONTH_YEAR"
                 INDEX_MAPPING='{
                     "mappings": {
                         "properties": {
                             "build_duration": {
                                 "type": "float"
-                            },
-                            "build_date": {
-                                "type": "date"
                             },
                             "build_number": {
                                 "type": "integer"
@@ -109,6 +111,36 @@ void indexFailedTestData() {
                                 "type": "date"
                             },
                             "git_reference": {
+                                "type": "text",
+                                "fields": {
+                                    "keyword": {
+                                        "type": "keyword",
+                                        "ignore_above": 256
+                                    }
+                                }
+                            },
+                            "invoke_type": {
+                                "type": "text",
+                                "fields": {
+                                    "keyword": {
+                                        "type": "keyword",
+                                        "ignore_above": 256
+                                    }
+                                }
+                            },
+                            "pull_request": {
+                                "type": "keyword"
+                            },
+                            "pull_request_owner": {
+                                "type": "text",
+                                "fields": {
+                                    "keyword": {
+                                        "type": "keyword",
+                                        "ignore_above": 256
+                                    }
+                                }
+                            },
+                            "pull_request_title": {
                                 "type": "text",
                                 "fields": {
                                     "keyword": {
@@ -138,48 +170,45 @@ void indexFailedTestData() {
                         }
                     }
                 }'
-//                echo "INDEX NAME IS \$INDEX_NAME"
-//                curl -I "${METRICS_HOST_URL}/\$INDEX_NAME" --aws-sigv4 \"aws:amz:us-east-1:es\" --user \"${awsAccessKey}:${awsSecretKey}\" -H \"x-amz-security-token:${awsSessionToken}\" | grep -E "HTTP\\/[0-9]+(\\.[0-9]+)? 200"
-//                if [ \$? -eq 0 ]; then
-//                    echo "Index already exists. Indexing Results"
-//                else
-//                    echo "Index does not exist. Creating..."
-//                    create_index_response=\$(curl -s -XPUT "${METRICS_HOST_URL}/\${INDEX_NAME}" --aws-sigv4 \"aws:amz:us-east-1:es\" --user \"${awsAccessKey}:${awsSecretKey}\" -H \"x-amz-security-token:${awsSessionToken}\" -H 'Content-Type: application/json' -d "\${INDEX_MAPPING}")
-//                    if echo "\$create_index_response" | grep -q '"acknowledged":true'; then
-//                        echo "Index created successfully."
-//                        echo "Updating alias..."
-//                        update_alias_response=\$(curl -s -XPOST "${METRICS_HOST_URL}/_aliases" --aws-sigv4 \"aws:amz:us-east-1:es\" --user \"${awsAccessKey}:${awsSecretKey}\" -H \"x-amz-security-token:${awsSessionToken}\" -H "Content-Type: application/json" -d '{
-//                            "actions": [
-//                                {
-//                                    "add": {
-//                                    "index": "\${INDEX_NAME}",
-//                                    "alias": "gradle-flaky-test"
-//                                    }
-//                                }
-//                            ]
-//                        }')
-//                        if echo "\$update_alias_response" | grep -q '"acknowledged":true'; then
-//                            echo "Alias updated successfully."
-//                        else
-//                            echo "Failed to update alias. Error message: \$update_alias_response"
-//                        fi
-//                    else
-//                        echo "Failed to create index. Error message: \$create_index_response"
-//                        exit 1
-//                    fi
-//                fi
-//                if [ -s failed-test-records.json ]; then
-//                    echo "File Exists, indexing results."
-//                    curl -XPOST "${METRICS_HOST_URL}/\$INDEX_NAME/_bulk" --aws-sigv4 \"aws:amz:us-east-1:es\" --user \"${awsAccessKey}:${awsSecretKey}\" -H \"x-amz-security-token:${awsSessionToken}\" -H "Content-Type: application/x-ndjson" --data-binary "@failed-test-records.json"
-//                else
-//                    echo "File Does not exist. No failing test records to process."
-//                fi
-
-
-        println("File Content is:\\n${INDEX_MAPPING}}")
-
+                echo "INDEX NAME IS \$INDEX_NAME"
+                curl -I "${METRICS_HOST_URL}/\$INDEX_NAME" --aws-sigv4 \"aws:amz:us-east-1:es\" --user \"${awsAccessKey}:${awsSecretKey}\" -H \"x-amz-security-token:${awsSessionToken}\" | grep -E "HTTP\\/[0-9]+(\\.[0-9]+)? 200"
+                if [ \$? -eq 0 ]; then
+                    echo "Index already exists. Indexing Results"
+                else
+                    echo "Index does not exist. Creating..."
+                    create_index_response=\$(curl -s -XPUT "${METRICS_HOST_URL}/\${INDEX_NAME}" --aws-sigv4 \"aws:amz:us-east-1:es\" --user \"${awsAccessKey}:${awsSecretKey}\" -H \"x-amz-security-token:${awsSessionToken}\" -H 'Content-Type: application/json' -d "\${INDEX_MAPPING}")
+                    if echo "\$create_index_response" | grep -q '"acknowledged":true'; then
+                        echo "Index created successfully."
+                        echo "Updating alias..."
+                        update_alias_response=\$(curl -s -XPOST "${METRICS_HOST_URL}/_aliases" --aws-sigv4 \"aws:amz:us-east-1:es\" --user \"${awsAccessKey}:${awsSecretKey}\" -H \"x-amz-security-token:${awsSessionToken}\" -H "Content-Type: application/json" -d '{
+                            "actions": [
+                                {
+                                    "add": {
+                                    "index": "\${INDEX_NAME}",
+                                    "alias": "gradle-check"
+                                    }
+                                }
+                            ]
+                        }')
+                        if echo "\$update_alias_response" | grep -q '"acknowledged":true'; then
+                            echo "Alias updated successfully."
+                        else
+                            echo "Failed to update alias. Error message: \$update_alias_response"
+                        fi
+                    else
+                        echo "Failed to create index. Error message: \$create_index_response"
+                        exit 1
+                    fi
+                fi
+                if [ -s failed-test-records.json ]; then
+                    echo "File Exists, indexing results."
+                    curl -XPOST "${METRICS_HOST_URL}/\$INDEX_NAME/_bulk" --aws-sigv4 \"aws:amz:us-east-1:es\" --user \"${awsAccessKey}:${awsSecretKey}\" -H \"x-amz-security-token:${awsSessionToken}\" -H "Content-Type: application/x-ndjson" --data-binary "@failed-test-records.json"
+                else
+                    echo "File Does not exist. No failing test records to process."
+                fi
         """
 }
 
 
 
+boolean isNullOrEmpty(String str) { return (str == 'Null' || str == null || str.allWhitespace || str.isEmpty()) }
