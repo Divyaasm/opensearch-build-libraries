@@ -26,8 +26,7 @@ void call(Map args = [:]) {
     def buildResult = currentBuild.result
     def buildStartTime = currentBuild.startTimeInMillis
     def gitReference = args.gitReference.toString()
-    def currentDate = new Date()
-    def formattedDate = new SimpleDateFormat("dd-MM-yyyy").format(currentDate)
+    def formattedDate = new SimpleDateFormat("dd-MM-yyyy").format(new Date())
 
     def indexName = "gradle-test-flaky-${formattedDate}"
     println("Print 1")
@@ -44,8 +43,7 @@ void call(Map args = [:]) {
 
         def fileContents = readFile(file: "failed-test-records.json").trim()
         println("File Content is:\n${fileContents}")
-        indexFeifjcbdlbeurirdittttnnvehfieujblgucdinhcjjgr
-        ailedTestData()
+        indexFailedTestData()
     }
 }
 
@@ -114,36 +112,6 @@ void indexFailedTestData() {
                                     }
                                 }
                             },
-                            "invoke_type": {
-                                "type": "text",
-                                "fields": {
-                                    "keyword": {
-                                        "type": "keyword",
-                                        "ignore_above": 256
-                                    }
-                                }
-                            },
-                            "pull_request": {
-                                "type": "keyword"
-                            },
-                            "pull_request_owner": {
-                                "type": "text",
-                                "fields": {
-                                    "keyword": {
-                                        "type": "keyword",
-                                        "ignore_above": 256
-                                    }
-                                }
-                            },
-                            "pull_request_title": {
-                                "type": "text",
-                                "fields": {
-                                    "keyword": {
-                                        "type": "keyword",
-                                        "ignore_above": 256
-                                    }
-                                }
-                            },
                             "test_class": {
                                 "type": "keyword"
                             },
@@ -161,6 +129,9 @@ void indexFailedTestData() {
                             },
                             "test_status": {
                                 "type": "keyword"
+                            },
+                            "test_status": {
+                                "type": "date"
                             }
                         }
                     }
