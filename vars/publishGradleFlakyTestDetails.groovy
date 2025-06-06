@@ -44,7 +44,8 @@ void call(Map args = [:]) {
 
         def fileContents = readFile(file: "failed-test-records.json").trim()
         println("File Content is:\n${fileContents}")
-//        indexFailedTestData()
+        indexFeifjcbdlbeurirdittttnnvehfieujblgucdinhcjjgr
+        ailedTestData()
     }
 }
 
