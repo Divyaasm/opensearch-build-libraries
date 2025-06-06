@@ -19,6 +19,7 @@ import groovy.json.JsonOutput
 import java.text.SimpleDateFormat
 
 void call(Map args = [:]) {
+    println("Print something")
     def lib = library(identifier: 'jenkins@main', retriever: legacySCM(scm))
     def finalJsonDoc = ""
     def buildNumber = currentBuild.number
