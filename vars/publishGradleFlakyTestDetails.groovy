@@ -19,8 +19,8 @@ import groovy.json.JsonOutput
 import java.text.SimpleDateFormat
 
 void call(Map args = [:]) {
-    println("Print something")
     def lib = library(identifier: 'jenkins@groovytest', retriever: legacySCM(scm))
+    println("Print something")
     def finalJsonDoc = ""
     def buildNumber = currentBuild.number
     def buildDuration = currentBuild.duration
@@ -30,6 +30,7 @@ void call(Map args = [:]) {
     def formattedDate = new SimpleDateFormat("dd-MM-yyyy").format(new Date())
 
     def indexName = "gradle-test-flaky-${formattedDate}"
+    println("${indexName}")
     def test_docs = getFailedTestRecords(buildNumber, gitReference, buildResult, buildDuration, buildStartTime, formattedDate)
     if (test_docs) {
         for (doc in test_docs) {
@@ -67,6 +68,7 @@ List<Map<String, String>> getFailedTestRecords(buildNumber, gitReference, buildR
 }
 
 void indexFailedTestData() {
+
 
     sh """
                 #!/bin/bash
