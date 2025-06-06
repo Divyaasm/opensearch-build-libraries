@@ -30,9 +30,10 @@ void call(Map args = [:]) {
     def formattedDate = new SimpleDateFormat("dd-MM-yyyy").format(new Date())
 
     def indexName = "gradle-test-flaky-${formattedDate}"
-    println("${indexName}")
     def test_docs = getFailedTestRecords(buildNumber, gitReference, buildResult, buildDuration, buildStartTime, formattedDate)
+    println("${indexName}")
     if (test_docs) {
+        println("${indexName}")
         for (doc in test_docs) {
             def jsonDoc = JsonOutput.toJson(doc)
             finalJsonDoc += "{\"index\": {\"_index\": \"${indexName}\"}}\n" + "${jsonDoc}\n"
@@ -64,6 +65,7 @@ List<Map<String, String>> getFailedTestRecords(buildNumber, gitReference, buildR
             println("No test failed.")
         }
     }
+    println("${testResults}")
     return testResults
 }
 
