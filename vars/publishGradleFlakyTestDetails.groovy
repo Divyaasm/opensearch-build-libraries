@@ -80,7 +80,7 @@ void indexFailedTestData() {
                 set +e
                 set +x
         
-                MONTH_YEAR=\$(date +"%m-%Y")  // update date in index
+                MONTH_YEAR=\$(date +"%m-%Y")
                 INDEX_NAME="gradle-test-flaky-\$MONTH_YEAR"
                 INDEX_MAPPING='{
                     "mappings": {
@@ -131,40 +131,11 @@ void indexFailedTestData() {
                     }
                 }'
                 echo "INDEX NAME IS \$INDEX_NAME"
-                curl -I "${METRICS_HOST_URL}/\$INDEX_NAME" --aws-sigv4 \"aws:amz:us-east-1:es\" --user \"${awsAccessKey}:${awsSecretKey}\" -H \"x-amz-security-token:${awsSessionToken}\" | grep -E "HTTP\\/[0-9]+(\\.[0-9]+)? 200"
-                if [ \$? -eq 0 ]; then
-                    echo "Index already exists. Indexing Results"
-                else
-                    echo "Index does not exist. Creating..."
-                    create_index_response=\$(curl -s -XPUT "${METRICS_HOST_URL}/\${INDEX_NAME}" --aws-sigv4 \"aws:amz:us-east-1:es\" --user \"${awsAccessKey}:${awsSecretKey}\" -H \"x-amz-security-token:${awsSessionToken}\" -H 'Content-Type: application/json' -d "\${INDEX_MAPPING}")
-                    if echo "\$create_index_response" | grep -q '"acknowledged":true'; then
-                        echo "Index created successfully."
-                        echo "Updating alias..."
-                        update_alias_response=\$(curl -s -XPOST "${METRICS_HOST_URL}/_aliases" --aws-sigv4 \"aws:amz:us-east-1:es\" --user \"${awsAccessKey}:${awsSecretKey}\" -H \"x-amz-security-token:${awsSessionToken}\" -H "Content-Type: application/json" -d '{
-                            "actions": [
-                                {
-                                    "add": {
-                                    "index": "\${INDEX_NAME}",
-                                    "alias": "gradle-check"
-                                    }
-                                }
-                            ]
-                        }')
-                        if echo "\$update_alias_response" | grep -q '"acknowledged":true'; then
-                            echo "Alias updated successfully."
-                        else
-                            echo "Failed to update alias. Error message: \$update_alias_response"
-                        fi
-                    else
-                        echo "Failed to create index. Error message: \$create_index_response"
-                        exit 1
-                    fi
-                fi
+
+                echo "Index does not exist. Creating..."
+                    
                 if [ -s failed-test-records.json ]; then
                     echo "File Exists, indexing results."
-                    curl -XPOST "${METRICS_HOST_URL}/\$INDEX_NAME/_bulk" --aws-sigv4 \"aws:amz:us-east-1:es\" --user \"${awsAccessKey}:${awsSecretKey}\" -H \"x-amz-security-token:${awsSessionToken}\" -H "Content-Type: application/x-ndjson" --data-binary "@failed-test-records.json"
-                else
-                    echo "File Does not exist. No failing test records to process."
                 fi
         """
 }
