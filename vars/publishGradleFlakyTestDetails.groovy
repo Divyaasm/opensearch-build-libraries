@@ -77,8 +77,10 @@ void indexFailedTestData() {
 //            def awsSessionToken = env.AWS_SESSION_TOKEN
 
     sh """
-                set +e
-                set +x
+                #!/bin/bash
+                
+                set -e
+                set -x
         
                 MONTH_YEAR=\$(date +"%m-%Y")
                 INDEX_NAME="gradle-test-flaky-\$MONTH_YEAR"
