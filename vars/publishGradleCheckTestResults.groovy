@@ -17,13 +17,13 @@
 import hudson.tasks.test.AbstractTestResultAction
 import groovy.json.JsonOutput
 import java.text.SimpleDateFormat
-//import java.util.Date
+import java.util.Date
 
 void call(Map args = [:]) {
     def lib = library(identifier: 'jenkins@main', retriever: legacySCM(scm))
     def finalJsonDoc = ""
     def buildNumber = currentBuild.number
-//    def buildDescription = currentBuild.description
+    def buildDescription = currentBuild.description
     def buildDuration = currentBuild.duration
     def buildResult = currentBuild.result
     def buildStartTime = currentBuild.startTimeInMillis
@@ -33,33 +33,29 @@ void call(Map args = [:]) {
     def prTitle = args.prTitle.toString()
     def gitReference = args.gitReference.toString()
     def currentDate = new Date()
-    def formattedDate = new SimpleDateFormat("dd-MM-yyyy").format(currentDate)
+    def formattedDate = new SimpleDateFormat("MM-yyyy").format(currentDate)
 
     def indexName = "gradle-check-${formattedDate}"
-    println("Print 1")
-    def test_docs = getFailedTestRecords(buildNumber, prNumber, invokeType, prOwner, prTitle, gitReference, buildResult, buildDuration, buildStartTime, formattedDate)
-    println("Print 3")
+
+    def test_docs = getFailedTestRecords(buildNumber, prNumber, invokeType, prOwner, prTitle, gitReference, buildResult, buildDuration, buildStartTime)
+
     if (test_docs) {
-        println("Print 4")
         for (doc in test_docs) {
             def jsonDoc = JsonOutput.toJson(doc)
             finalJsonDoc += "{\"index\": {\"_index\": \"${indexName}\"}}\n" + "${jsonDoc}\n"
         }
-        println("Print 5")
         writeFile file: "failed-test-records.json", text: finalJsonDoc
 
         def fileContents = readFile(file: "failed-test-records.json").trim()
         println("File Content is:\n${fileContents}")
-//        indexFailedTestData()
+        indexFailedTestData()
     }
 }
 
-List<Map<String, String>> getFailedTestRecords(buildNumber, prNumber, invokeType, prOwner, prTitle, gitReference, buildResult, buildDuration, buildStartTime, formattedDate) {
+List<Map<String, String>> getFailedTestRecords(buildNumber, prNumber, invokeType, prOwner, prTitle, gitReference, buildResult, buildDuration, buildStartTime) {
     def testResults = []
     AbstractTestResultAction testResultAction = currentBuild.rawBuild.getAction(AbstractTestResultAction.class)
-    println("Print 2 1")
     if (testResultAction != null) {
-        println("Print 2 2")
         def testsTotal = testResultAction.totalCount
         def testsFailed = testResultAction.failCount
         def testsSkipped = testResultAction.skipCount
@@ -68,7 +64,7 @@ List<Map<String, String>> getFailedTestRecords(buildNumber, prNumber, invokeType
 
         if (failedTests){
             for (test in failedTests) {
-                def failDocument = ['build_number': buildNumber, 'pull_request': prNumber, 'pull_request_owner': prOwner , 'invoke_type': invokeType, 'pull_request_title': prTitle, 'git_reference': gitReference, 'test_class': test.getParent().getName(), 'test_name': test.fullName, 'test_status': 'FAILED', 'build_result': buildResult, 'test_fail_count': testsFailed, 'test_skipped_count': testsSkipped, 'test_passed_count': testsPassed, 'build_duration': buildDuration, 'build_start_time': buildStartTime, 'build_date': formattedDate]
+                def failDocument = ['build_number': buildNumber, 'pull_request': prNumber, 'pull_request_owner': prOwner , 'invoke_type': invokeType, 'pull_request_title': prTitle, 'git_reference': gitReference, 'test_class': test.getParent().getName(), 'test_name': test.fullName, 'test_status': 'FAILED', 'build_result': buildResult, 'test_fail_count': testsFailed, 'test_skipped_count': testsSkipped, 'test_passed_count': testsPassed, 'build_duration': buildDuration, 'build_start_time': buildStartTime]
                 testResults.add(failDocument)
             }
         } else {
@@ -93,7 +89,7 @@ void indexFailedTestData() {
                 set +e
                 set +x
         
-                MONTH_YEAR=\$(date +"%d-%m-%Y")  // update date in index
+                MONTH_YEAR=\$(date +"%m-%Y")
                 INDEX_NAME="gradle-check-\$MONTH_YEAR"
                 INDEX_MAPPING='{
                     "mappings": {
