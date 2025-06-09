@@ -21,11 +21,10 @@ void call(Map args = [:]) {
     def buildDuration = currentBuild.duration
     def buildResult = currentBuild.result
     def buildStartTime = currentBuild.startTimeInMillis
-    def gitReference = args.gitReference.toString()
     def formattedDate = new SimpleDateFormat("dd-MM-yyyy").format(new Date())
 
     def indexName = "gradle-test-flaky-${formattedDate}"
-    def test_docs = getFailedTestRecords(buildNumber, gitReference, buildResult, buildDuration, buildStartTime, formattedDate)
+    def test_docs = getFailedTestRecords(buildNumber, buildResult, buildDuration, buildStartTime, formattedDate)
     if (test_docs) {
         for (doc in test_docs) {
             def jsonDoc = JsonOutput.toJson(doc)
@@ -39,7 +38,7 @@ void call(Map args = [:]) {
     }
 }
 
-List<Map<String, String>> getFailedTestRecords(buildNumber, gitReference, buildResult, buildDuration, buildStartTime, formattedDate) {
+List<Map<String, String>> getFailedTestRecords(buildNumber, buildResult, buildDuration, buildStartTime, formattedDate) {
     def testResults = []
     AbstractTestResultAction testResultAction = currentBuild.rawBuild.getAction(AbstractTestResultAction.class)
     if (testResultAction != null) {
