@@ -7,74 +7,65 @@
  * compatible open source license.
  */
 
-/** Library to record failing gradle-check tests hourly index the failed test results to an OpenSearch cluster.
- */
+package jenkins.tests
 
-import hudson.tasks.test.AbstractTestResultAction
-import groovy.json.JsonOutput
+import org.junit.Before
+import groovy.json.JsonSlurper
+import org.junit.Test
 import java.text.SimpleDateFormat
+import java.util.Date
 
-void call(Map args = [:]) {
-    def lib = library(identifier: 'jenkins@groovytest', retriever: legacySCM(scm))
-    def finalJsonDoc = ""
-    def buildNumber = currentBuild.number
-    def buildDuration = currentBuild.duration
-    def buildResult = currentBuild.result
-    def buildStartTime = currentBuild.startTimeInMillis
-    def formattedDate = new SimpleDateFormat("MM-yyyy").format(currentDate)
+class TestPublishGradleFlakyTestDetails extends BuildPipelineTest {
 
-    def indexName = "gradle-test-flaky-${formattedDate}"
-    def test_docs = getFailedTestRecords(buildNumber, buildResult, buildDuration, buildStartTime)
-    if (test_docs) {
-        for (doc in test_docs) {
-            def jsonDoc = JsonOutput.toJson(doc)
-            finalJsonDoc += "{\"index\": {\"_index\": \"${indexName}\"}}\n" + "${jsonDoc}\n"
-        }
-        writeFile file: "failed-test-records.json", text: finalJsonDoc
-
-        def fileContents = readFile(file: "failed-test-records.json").trim()
-        println("File Content is:\n${fileContents}")
-        indexFailedTestData()
+    @Overrride
+    @Before
+    void setUP() {
+        super.setUp()
+        binding.setVariable('currentBuild', [
+            number: 450,
+            startTimeInMillis: System.currentTimeMillis(),
+            duration: ,
+            result: FAILURE
+        ])
+        binding.setVariable('sh', { cmd -> println cmd })
+        binding.setVariable('writeFile', { params -> println params.text })
+        binding.setVariable('withCredentials', { creds, closure -> closure() })
+        binding.setVariable('currentDate', new Date())
+        binding.setVariable('formattedDate', new SimpleDateFormat("MM-yyyy").format(currentDate))
+        helper.registerAllowedMethod("withAWS", [Map, Closure], { args, closure ->
+            closure.delegate = delegate
+            return helper.callClosure(closure)
+        })
+        binding.setVariable('curl', { params -> println params })
     }
-}
 
-List<Map<String, String>> getFailedTestRecords(buildNumber, buildResult, buildDuration, buildStartTime) {
-    def testResults = []
-    AbstractTestResultAction testResultAction = currentBuild.rawBuild.getAction(AbstractTestResultAction.class)
-    if (testResultAction != null) {
-        def testsTotal = testResultAction.totalCount
-        def testsFailed = testResultAction.failCount
-        def testsSkipped = testResultAction.skipCount
-        def testsPassed = testsTotal - testsFailed - testsSkipped
-        def failedTests = testResultAction.getFailedTests()
+    @Test
+    void testIndexFailedTestData() {
 
-        if (failedTests){
-            for (test in failedTests) {
-                def failDocument = ['build_number': buildNumber, 'test_class': test.getParent().getName(), 'test_name': test.fullName, 'test_status': 'FAILED', 'build_result': buildResult, 'test_fail_count': testsFailed, 'test_skipped_count': testsSkipped, 'test_passed_count': testsPassed, 'build_duration': buildDuration, 'build_start_time': buildStartTime, 'build_date': formattedDate]
-                testResults.add(failDocument)
+        def indexName = 'gradle-test-test'
+        def testRecordsFile = 'failed-test-records.ndjson'
+
+        def script = loadScript('vars/publishGradleFlakyTestDetails')
+
+        def calledCommands = new arrayList()
+        script.metaClass.sh = { String command ->
+            calledCommands << command
+            if (command.contains("curl -I")) {
+                return "HTTP/1.1 200 OK"
+            } else if (command.contains("curl -s -XPUT") && command.contains("test-index")) {
+                return '{"acknowledged":true}'
+            } else if (command.contains("curl -XPOST") && command.contains("test-index")) {
+                return '{"took":10, "errors":false}'
+            } else {
+                throw new IllegalArgumentException("Unexpected command: $command")
             }
-        } else {
-            println("No test failed.")
         }
-    }
-    return testResults
-}
 
-void indexFailedTestData() {
-
-    withCredentials([
-            string(credentialsId: 'jenkins-health-metrics-account-number', variable: 'METRICS_HOST_ACCOUNT'),
-            string(credentialsId: 'jenkins-health-metrics-cluster-endpoint', variable: 'METRICS_HOST_URL')
-    ]) {
-        withAWS(role: 'OpenSearchJenkinsAccessRole', roleAccount: "${METRICS_HOST_ACCOUNT}", duration: 900, roleSessionName: 'jenkins-session') {
-            def awsAccessKey = env.AWS_ACCESS_KEY_ID
-            def awsSecretKey = env.AWS_SECRET_ACCESS_KEY
-            def awsSessionToken = env.AWS_SESSION_TOKEN
-
-            sh """
+        script.indexFailedTestData(indexName, testRecordsFile)
+        def expectedCommandBlock = sh '''
                 set -e
                 set -x
-        
+
                 MONTH_YEAR=\$(date +"%m-%Y")
                 INDEX_NAME="gradle-test-flaky-\$MONTH_YEAR"
                 INDEX_MAPPING='{
@@ -109,9 +100,6 @@ void indexFailedTestData() {
                             },
                             "test_status": {
                                 "type": "keyword"
-                            },
-                            "build_date": {
-                                "type": "date"
                             }
                         }
                     }
@@ -152,7 +140,42 @@ void indexFailedTestData() {
                 else
                     echo "File Does not exist. No failing test records to process."
                 fi
-        """
-        }
+        '''
+        assert calledCommands.size() == 1
+        assert normalizeString(calledCommands[0]) == normalizeString(expectedCommandBlock)
     }
+
+     @Test
+    void testGenerateJson() {
+        def script = loadScript('vars/publishGradleFlakyTestDetails')
+        def result = script.generateJson(
+            '450', 'main', 'PemTrustConfigTests', 'org.opensearch.common.ssl.PemTrustConfigTests.testTrustConfigReloadsFileContents',
+             'FAILED', 'FAILED', '1', '0', '0', '224724', System.currentTimeMillis()
+        )
+
+        def parsedResult = new JsonSlurper().parseText(result)
+        def expectedJson = [
+            build_number: '450',
+            git_reference:'main',
+            test_class:'PemTrustConfigTests',
+            test_name:'org.opensearch.common.ssl.PemTrustConfigTests.testTrustConfigReloadsFileContents',
+            test_status:'FAILED',
+            build_result:'FAILURE',
+            test_fail_count: '1',
+            test_skipped_count: '0',
+            test_passed_count: '0',
+            build_duration: '224724',
+        ]
+        // Remove the dynamic field for comparison
+        parsedResult.remove('build_start_time')
+        assert parsedResult == expectedJson
+
+    }
+
+
+
+
+
+    }
+
 }
