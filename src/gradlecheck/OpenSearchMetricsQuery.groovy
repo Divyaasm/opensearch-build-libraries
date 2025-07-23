@@ -28,6 +28,8 @@ class OpenSearchMetricsQuery {
 
     // Ensure the alias `gradle-check` is created targeting all the gradle-check-* indices.
     def fetchMetrics(String query) {
+        this.script.println('Running query: '+ query)
+        this.script.println('Called again')
         def response = script.sh(
             script: """
             set -e
@@ -37,6 +39,7 @@ class OpenSearchMetricsQuery {
         """,
                 returnStdout: true
         ).trim()
+        this.script.println('Response '+ response)
         return new JsonSlurper().parseText(response)
     }
 }
