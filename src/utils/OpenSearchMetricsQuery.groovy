@@ -7,7 +7,7 @@
  * compatible open source license.
  */
 
-package gradlecheck
+package utils
 
 import groovy.json.JsonSlurper
 

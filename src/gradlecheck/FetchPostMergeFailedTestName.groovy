@@ -10,7 +10,7 @@
 package gradlecheck
 
 import groovy.json.JsonOutput
-import gradlecheck.OpenSearchMetricsQuery
+import utils.OpenSearchMetricsQuery
 
 class FetchPostMergeFailedTestName  {
     String metricsUrl
