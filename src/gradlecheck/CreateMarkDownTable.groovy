@@ -24,7 +24,10 @@ class CreateMarkDownTable {
         def groupRows = this.tableData.groupBy{it.gitReference }
         def tableRows = groupRows.collect { Ref, rows ->
             def pullRequestLink = rows.collect { it.pullRequestLink }.unique().join('<br><br>')
-            def buildDetailLink = rows.collect { it.buildDetailLink }.unique().join(' <br><br> ')
+            def buildDetailLink = rows.collect { url ->
+                "[${url}](${url})"
+            }.unique().join('<br><br>')
+//            def buildDetailLink = rows.collect { it.buildDetailLink }.unique().join(' <br><br> ')
             def testNames = rows.collectMany { it.testNames }.unique().join('<br><br>')
 
             "| ${Ref} | ${pullRequestLink} | ${buildDetailLink} | ${testNames} |"
