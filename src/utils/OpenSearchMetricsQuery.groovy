@@ -17,29 +17,29 @@ class OpenSearchMetricsQuery {
     String awsSecretKey
     String awsSessionToken
     def script
-    def sh
 
-    OpenSearchMetricsQuery(String metricsUrl, String awsAccessKey, String awsSecretKey, String awsSessionToken, def script, def sh) {
+    OpenSearchMetricsQuery(String metricsUrl, String awsAccessKey, String awsSecretKey, String awsSessionToken, def script) {
         this.metricsUrl = metricsUrl
         this.awsAccessKey = awsAccessKey
         this.awsSecretKey = awsSecretKey
         this.awsSessionToken = awsSessionToken
         this.script = script
-        this.sh = sh
     }
 
     // Ensure the alias `gradle-check` is created targeting all the gradle-check-* indices.
     def fetchMetrics(String query) {
         this.script.println('Running query: '+ query)
         this.script.println('Called again')
-        def curlCommand = """
+        def response = script.sh(
+            script: """
             set -e
             set +x
             MONTH_YEAR=\$(date +"%m-%Y")
             curl -s -XGET "${metricsUrl}/gradle-check/_search" --aws-sigv4 "aws:amz:us-east-1:es" --user "${awsAccessKey}:${awsSecretKey}" -H "x-amz-security-token:${awsSessionToken}" -H 'Content-Type: application/json' -d "${query}" | jq '.'
-        """
-        String output = sh(script: curlCommand, returnStdout: true).trim()
-        this.script.println('Response '+ output)
+        """,
+                returnStdout: true
+        ).trim()
+        this.script.println('Response '+ response)
         return new JsonSlurper().parseText(response)
     }
 }
