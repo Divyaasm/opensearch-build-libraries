@@ -18,13 +18,15 @@ class FetchPostMergeFailedTestClass {
     String awsSecretKey
     String awsSessionToken
     def script
+    def sh
 
-    FetchPostMergeFailedTestClass(String metricsUrl, String awsAccessKey, String awsSecretKey, String awsSessionToken, def script) {
+    FetchPostMergeFailedTestClass(String metricsUrl, String awsAccessKey, String awsSecretKey, String awsSessionToken, def script, def sh) {
         this.metricsUrl = metricsUrl
         this.awsAccessKey = awsAccessKey
         this.awsSecretKey = awsSecretKey
         this.awsSessionToken = awsSessionToken
         this.script = script
+        this.sh = sh
     }
 
     def getQuery(timeFrame) {
@@ -88,7 +90,7 @@ class FetchPostMergeFailedTestClass {
     }
 
     def getPostMergeFailedTestClass(timeFrame) {
-         def jsonResponse = new OpenSearchMetricsQuery(metricsUrl,awsAccessKey, awsSecretKey, awsSessionToken, script).fetchMetrics(getQuery(timeFrame))
+         def jsonResponse = new OpenSearchMetricsQuery(metricsUrl,awsAccessKey, awsSecretKey, awsSessionToken, script, sh).fetchMetrics(getQuery(timeFrame))
          def keys = jsonResponse.aggregations.test_class_keyword_agg.buckets.collect { it.key }
          return keys
     }
