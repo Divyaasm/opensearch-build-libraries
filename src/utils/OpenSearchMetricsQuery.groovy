@@ -36,7 +36,7 @@ class OpenSearchMetricsQuery {
             set -e
             set +x
             MONTH_YEAR=\$(date +"%m-%Y")
-            curl -s -XGET '${metricsUrl}/${name}/_search' --aws-sigv4 'aws:amz:us-east-1:es' --user '${awsAccessKey}:${awsSecretKey}' -H 'x-amz-security-token:${awsSessionToken}' -H 'Content-Type: application/json' -d '${query}' | jq '.'
+            curl --path-as-is -s -XGET '${metricsUrl}/${name}/_search' --aws-sigv4 'aws:amz:us-east-1:es' --user '${awsAccessKey}:${awsSecretKey}' -H 'x-amz-security-token:${awsSessionToken}' -H 'Content-Type: application/json' -d '${query}' | jq '.'
         """,
                 returnStdout: true
         ).trim()
