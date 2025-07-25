@@ -21,16 +21,13 @@ class CreateMarkDownTable {
     }
 
     def createMarkdownTable() {
-        def groupRows = this.tableData.groupBy{it.gitReference }
+        def groupRows = this.tableData.findAll { it.gitReference }.groupBy{ it.gitReference }
         def tableRows = groupRows.collect { Ref, rows ->
             def pullRequestLink = rows.collect { it.pullRequestLink }.unique().join('<br><br>')
-            def buildDetailLink = rows.collect { url ->
-                "[${url}](${url})"
-            }.unique().join('<br><br>')
-//            def buildDetailLink = rows.collect { it.buildDetailLink }.unique().join(' <br><br> ')
+            def buildDetails = rows.collect { it.buildDetailLink }.unique().join(' <br><br> ')
             def testNames = rows.collectMany { it.testNames }.unique().join('<br><br>')
 
-            "| ${Ref} | ${pullRequestLink} | ${buildDetailLink} | ${testNames} |"
+            "| ${Ref} | ${pullRequestLink} | ${buildDetails} | ${testNames} |"
         }.join("\n")
 
 
