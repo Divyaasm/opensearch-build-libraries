@@ -28,16 +28,15 @@ class OpenSearchMetricsQuery {
 
     // Ensure the alias `gradle-check` is created targeting all the gradle-check-* indices.
     def fetchMetrics(String query) {
-        def name = "gradle-check-"
+        def name = "gradle-check-*"
         this.script.println('Running query: '+ query)
         this.script.println('Called again')
         def response = script.sh(
             script: """
-            #!/usr/bin/env zsh
             set -e
             set +x
             MONTH_YEAR=\$(date +"%m-%Y")
-            noglob curl -s -XGET "${metricsUrl}/${name}*/_search" --aws-sigv4 "aws:amz:us-east-1:es" --user "${awsAccessKey}:${awsSecretKey}" -H "x-amz-security-token:${awsSessionToken}" -H 'Content-Type: application/json' -d "${query}" | jq '.'
+            curl -s -XGET '${metricsUrl}/${name}/_search' --aws-sigv4 'aws:amz:us-east-1:es' --user '${awsAccessKey}:${awsSecretKey}' -H 'x-amz-security-token:${awsSessionToken}' -H 'Content-Type: application/json' -d '${query}' | jq '.'
         """,
                 returnStdout: true
         ).trim()
