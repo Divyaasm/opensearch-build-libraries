@@ -30,15 +30,13 @@ class OpenSearchMetricsQuery {
     def fetchMetrics(String query) {
         this.script.println('Running query: '+ query)
         this.script.println('Called again')
-        def response = script.sh(
-            script: """
+        def curlCommand = """
             set -e
             set +x
             MONTH_YEAR=\$(date +"%m-%Y")
-            curl -s -XGET "${metricsUrl}/gradle-check-\\*/_search" --aws-sigv4 "aws:amz:us-east-1:es" --user "${awsAccessKey}:${awsSecretKey}" -H "x-amz-security-token:${awsSessionToken}" -H 'Content-Type: application/json' -d "${query}" | jq '.'
-        """,
-                returnStdout: true
-        ).trim()
+            curl -s -XGET "${metricsUrl}/gradle-check/_search" --aws-sigv4 "aws:amz:us-east-1:es" --user "${awsAccessKey}:${awsSecretKey}" -H "x-amz-security-token:${awsSessionToken}" -H 'Content-Type: application/json' -d "${query}" | jq '.'
+        """
+        String output = sh(script: curlCommand, returnStdout: true).trim()
         this.script.println('Response '+ response)
         return new JsonSlurper().parseText(response)
     }
