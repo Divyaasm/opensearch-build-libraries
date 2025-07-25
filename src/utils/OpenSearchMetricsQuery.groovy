@@ -36,7 +36,6 @@ class OpenSearchMetricsQuery {
             #!/usr/bin/env zsh
             set -e
             set +x
-            echo "Current shell: \$0"
             MONTH_YEAR=\$(date +"%m-%Y")
             noglob curl -s -XGET "${metricsUrl}/${name}*/_search" --aws-sigv4 "aws:amz:us-east-1:es" --user "${awsAccessKey}:${awsSecretKey}" -H "x-amz-security-token:${awsSessionToken}" -H 'Content-Type: application/json' -d "${query}" | jq '.'
         """,
