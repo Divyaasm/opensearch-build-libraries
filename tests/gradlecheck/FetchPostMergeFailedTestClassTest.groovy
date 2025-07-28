@@ -11,6 +11,7 @@ package gradlecheck
 
 import org.junit.*
 import groovy.json.JsonOutput
+import utils.OpenSearchMetricsQuery
 import groovy.mock.interceptor.MockFor
 
 class FetchPostMergeFailedTestClassTest {
@@ -122,5 +123,21 @@ class FetchPostMergeFailedTestClassTest {
         def result = fetchPostMergeFailedTestClass.getPostMergeFailedTestClass(timeFrame)
 
         assert result == expectedOutput
+    }
+
+    @Test
+    void getPostMergeFailedTestClassException() {
+        script = new Expando()
+        script.println = { String message ->
+            assert message.startsWith("Error fetching Failed Test Class Details:")
+        }
+        fetchPostMergeFailedTestClass = new FetchPostMergeFailedTestClass(metricsUrl, awsAccessKey, awsSecretKey, awsSessionToken, script)
+        fetchPostMergeFailedTestClass.openSearchMetricsQuery = [
+                fetchMetrics: { query ->
+                    throw new RuntimeException("Test exception")
+                }
+        ]
+        def result = fetchPostMergeFailedTestClass.getPostMergeFailedTestClass('sql')
+        assert result == null
     }
 }
