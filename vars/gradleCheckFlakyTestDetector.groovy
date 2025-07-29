@@ -18,6 +18,7 @@ import gradlecheck.FetchPostMergeTestGitReference
 import gradlecheck.FetchPostMergeFailedTestName
 import gradlecheck.FetchTestPullRequests
 import gradlecheck.CreateMarkDownTable
+import gradlecheck.ParseMarkDownTable
 
 void call(Map args = [:]) {
     withCredentials([
@@ -54,6 +55,8 @@ void call(Map args = [:]) {
                 writeFile file: "${failedTest}.md", text: markdownTable
                 def content = readFile("${failedTest}.md")
                 println "Markdown content:\n${content}"
+                def parseMarkdownTable = new ParseMarkDownTable(readFile("${failedTest}.md")).parseMarkdownTableRows()
+                println "markdownTable:\n${parseMarkdownTable}"
 //                gradleCheckFlakyTestGitHubIssue(
 //                        repoUrl: "https://github.com/opensearch-project/OpenSearch",
 //                        issueTitle: "[AUTOCUT] Gradle Check Flaky Test Report for ${failedTest}",
