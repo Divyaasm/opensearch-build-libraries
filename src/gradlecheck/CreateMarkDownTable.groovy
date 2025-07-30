@@ -27,7 +27,6 @@ class CreateMarkDownTable {
         def tableRows = groupRows.collect { Ref, rows ->
             def pullRequestLink = rows.collect { it.pullRequestLink }.unique().join('<br><br>')
             def buildDetails = rows.collect { it.buildDetailLink }.unique()
-            println "${buildDetails}"
             def testNames = rows.collectMany { it.testNames }.unique().join('<br><br>')
 
             "| ${Ref} | ${pullRequestLink} | ${buildDetails} | ${testNames} |"
