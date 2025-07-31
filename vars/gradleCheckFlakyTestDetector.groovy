@@ -32,6 +32,7 @@ void call(Map args = [:]) {
             def timeFrame = args.timeFrame ?: '30d'
             def indexName = 'gradle-check'
             def postMergeFailedTests = new FetchPostMergeFailedTestClass(metricsUrl, awsAccessKey, awsSecretKey, awsSessionToken, indexName, this).getPostMergeFailedTestClass(timeFrame)
+            println("${postMergeFailedTests}")
             postMergeFailedTests.each { failedTest ->
                 def testData = []
                 def allPullRequests = []
@@ -41,6 +42,7 @@ void call(Map args = [:]) {
                     def testNames = failedTestNames.aggregations.test_name_keyword_agg.buckets.collect { it.key }
                     def buildNumber = failedTestNames.aggregations.build_number_agg.buckets.collect { it.key }
                     def pullRequests = failedTestNames.aggregations.pull_request_agg.buckets.collect { it.key }
+                    println("${failedTestNames}" + "," + "${buildNumber}" + "," + "${buildNumber}")
                     allPullRequests.addAll(pullRequests)
                     def rowData = [
                             gitReference: gitReference,
