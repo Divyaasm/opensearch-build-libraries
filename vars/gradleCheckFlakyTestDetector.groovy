@@ -40,6 +40,7 @@ void call(Map args = [:]) {
                 postMergeTestGitReference.each { gitReference ->
                     def failedTestNames = new FetchPostMergeFailedTestName(metricsUrl, awsAccessKey, awsSecretKey, awsSessionToken, this).getPostMergeFailedTestName(failedTest, gitReference)
                     def testNames = failedTestNames.aggregations.test_name_keyword_agg.buckets.collect { it.key }
+                    println("${testNames}")
                     def buildNumber = failedTestNames.aggregations.build_number_agg.buckets.collect { it.key }
                     def pullRequests = failedTestNames.aggregations.pull_request_agg.buckets.collect { it.key }
                     allPullRequests.addAll(pullRequests)
@@ -51,10 +52,10 @@ void call(Map args = [:]) {
                     ]
                     testData << rowData
                 }
-                def testNameAdditionalPullRequests = new FetchTestPullRequests(metricsUrl, awsAccessKey, awsSecretKey, awsSessionToken, this).getTestPullRequests(failedTest).findAll { !allPullRequests.contains(it) }
-                def markdownTable = new CreateMarkDownTable(failedTest, testData, testNameAdditionalPullRequests).createMarkdownTable()
-                writeFile file: "${failedTest}.md", text: markdownTable
-//                def content = readFile("${failedTest}.md")
+//                def testNameAdditionalPullRequests = new FetchTestPullRequests(metricsUrl, awsAccessKey, awsSecretKey, awsSessionToken, this).getTestPullRequests(failedTest).findAll { !allPullRequests.contains(it) }
+//                def markdownTable = new CreateMarkDownTable(failedTest, testData, testNameAdditionalPullRequests).createMarkdownTable()
+//                writeFile file: "${failedTest}.md", text: markdownTable
+////                def content = readFile("${failedTest}.md")
 //                println "Markdown content:\n${content}"
 //                def parseMarkdownTable = new ParseMarkDownTable(readFile("${failedTest}.md")).parseMarkdownTableRows()
 //                println "markdownTable:\n${parseMarkdownTable}"
