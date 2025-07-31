@@ -92,7 +92,7 @@ class FetchPostMergeTestGitReference  {
         return query.replace('"', '\\"')
     }
 
-    def getPostMergeTestGitReference(testName) {
+    def getPostMergeTestGitReference(String testName) {
         def jsonResponse = new OpenSearchMetricsQuery(metricsUrl,awsAccessKey, awsSecretKey, awsSessionToken, indexName, script).fetchMetrics(getQuery(testName))
         def keys = jsonResponse.aggregations.git_reference_keyword_agg.buckets.collect { it.key }
         return keys
