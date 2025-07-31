@@ -37,7 +37,7 @@ void call(Map args = [:]) {
                 def allPullRequests = []
                 def postMergeTestGitReference = new FetchPostMergeTestGitReference(metricsUrl, awsAccessKey, awsSecretKey, awsSessionToken, indexName, this).getPostMergeTestGitReference(failedTest)
                 postMergeTestGitReference.each { gitReference ->
-                    def failedTestNames = new FetchPostMergeFailedTestName(metricsUrl, awsAccessKey, awsSecretKey, awsSessionToken, indexName this).getPostMergeFailedTestName(failedTest, gitReference)
+                    def failedTestNames = new FetchPostMergeFailedTestName(metricsUrl, awsAccessKey, awsSecretKey, awsSessionToken, indexName, this).getPostMergeFailedTestName(failedTest, gitReference)
                     def testNames = failedTestNames.aggregations.test_name_keyword_agg.buckets.collect { it.key }
                     def buildNumber = failedTestNames.aggregations.build_number_agg.buckets.collect { it.key }
                     def pullRequests = failedTestNames.aggregations.pull_request_agg.buckets.collect { it.key }
