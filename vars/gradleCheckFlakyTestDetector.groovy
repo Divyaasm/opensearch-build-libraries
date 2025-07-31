@@ -31,9 +31,11 @@ void call(Map args = [:]) {
             def awsSessionToken = env.AWS_SESSION_TOKEN
             def timeFrame = args.timeFrame ?: '30d'
             def postMergeFailedTests = new FetchPostMergeFailedTestClass(metricsUrl, awsAccessKey, awsSecretKey, awsSessionToken, this).getPostMergeFailedTestClass(timeFrame)
+            println("${postMergeFailedTests}")
             postMergeFailedTests.each { failedTest ->
                 def testData = []
                 def allPullRequests = []
+                println("${failedTest}")
                 def postMergeTestGitReference = new FetchPostMergeTestGitReference(metricsUrl, awsAccessKey, awsSecretKey, awsSessionToken, this).getPostMergeTestGitReference(failedTest)
                 postMergeTestGitReference.each { gitReference ->
                     def failedTestNames = new FetchPostMergeFailedTestName(metricsUrl, awsAccessKey, awsSecretKey, awsSessionToken, this).getPostMergeFailedTestName(failedTest, gitReference)
