@@ -54,13 +54,13 @@ void call(Map args = [:]) {
                 def testNameAdditionalPullRequests = new FetchTestPullRequests(metricsUrl, awsAccessKey, awsSecretKey, awsSessionToken, this).getTestPullRequests(failedTest).findAll { !allPullRequests.contains(it) }
                 def markdownTable = new CreateMarkDownTable(failedTest, testData, testNameAdditionalPullRequests).createMarkdownTable()
                 writeFile file: "${failedTest}.md", text: markdownTable
-                gradleCheckFlakyTestGitHubIssue(
-                        repoUrl: "https://github.com/opensearch-project/OpenSearch",
-                        issueTitle: "[AUTOCUT] Gradle Check Flaky Test Report for ${failedTest}",
-                        issueBodyFile: "${failedTest}.md",
-                        label: args.issueLabels,
-                        issueEdit: true
-                )
+//                gradleCheckFlakyTestGitHubIssue(
+//                        repoUrl: "https://github.com/opensearch-project/OpenSearch",
+//                        issueTitle: "[AUTOCUT] Gradle Check Flaky Test Report for ${failedTest}",
+//                        issueBodyFile: "${failedTest}.md",
+//                        label: args.issueLabels,
+//                        issueEdit: true
+//                )
             }
         }
     }
