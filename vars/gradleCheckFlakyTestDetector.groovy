@@ -32,7 +32,7 @@ void call(Map args = [:]) {
             def timeFrame = args.timeFrame ?: '30d'
             def indexName = 'gradle-check'
 //            def postMergeFailedTests = new FetchPostMergeFailedTestClass(metricsUrl, awsAccessKey, awsSecretKey, awsSessionToken, indexName, this).getPostMergeFailedTestClass(timeFrame)
-            postMergeFailedTests = ["RemoteCloseIndexIT", "CloseIndexIT", "FullClusterRestartIT", "FullRollingRestartIT", "SmokeTestMultiNodeClientYamlTestSuiteIT", "AutoForceMergeManagerTests", "DeleteByQueryBasicTests", "ResourceAwareTasksTests", "AzureBlobStoreRepositoryTests", "IndexStatsIT", "Netty4HttpRequestSizeLimitIT", "RemoteStoreIT", "RestoreShallowSnapshotV2IT"]
+            postMergeFailedTests = ["FullRollingRestartIT", "RemoteCloseIndexIT", "CloseIndexIT", "SmokeTestMultiNodeClientYamlTestSuiteIT", "AutoForceMergeManagerTests", "DeleteByQueryBasicTests", "ResourceAwareTasksTests", "AzureBlobStoreRepositoryTests", "IndexStatsIT", "Netty4HttpRequestSizeLimitIT", "RemoteStoreIT", "RestoreShallowSnapshotV2IT"]
             println("${postMergeFailedTests}")
             postMergeFailedTests.each { failedTest ->
                 def testData = []
