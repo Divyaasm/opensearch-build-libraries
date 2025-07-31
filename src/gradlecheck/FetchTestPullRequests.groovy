@@ -92,7 +92,6 @@ class FetchTestPullRequests  {
     List<String> getTestPullRequests(testName) {
         def jsonResponse = new OpenSearchMetricsQuery(metricsUrl,awsAccessKey, awsSecretKey, awsSessionToken, script).fetchMetrics(getQuery(testName))
         def keys = jsonResponse.aggregations.pull_request_keyword_agg.buckets.collect { it.key }
-        println("pull_request_keyword_agg")
         return keys
     }
 

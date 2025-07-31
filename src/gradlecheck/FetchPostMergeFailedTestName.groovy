@@ -118,7 +118,6 @@ class FetchPostMergeFailedTestName  {
 
     }
     def getPostMergeFailedTestName(testName, gitReference) {
-        println("failed test name")
         return new OpenSearchMetricsQuery(metricsUrl, awsAccessKey, awsSecretKey, awsSessionToken, script).fetchMetrics(getQuery(testName, gitReference))
     }
 }
