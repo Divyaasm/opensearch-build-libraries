@@ -93,12 +93,12 @@ class FetchPostMergeTestGitReference  {
                                         order: [
                                         sort_build_number: "desc"
                                         ]
-                                ]
-                        ],
-                        aggs: [
-                                sort_build_number: [
-                                        max: [
-                                                field: "build_number",
+                                ],
+                                aggs: [
+                                        sort_build_number: [
+                                                max: [
+                                                        field: "build_number",
+                                                ]
                                         ]
                                 ]
                         ]
