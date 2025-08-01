@@ -40,20 +40,25 @@ void call(Map args = [:]) {
                 def postMergeTestGitReference = new FetchPostMergeTestGitReference(metricsUrl, awsAccessKey, awsSecretKey, awsSessionToken, indexName, this).getPostMergeTestGitReference(failedTest)
                 println("${postMergeTestGitReference}")
                 postMergeTestGitReference.each { gitReference ->
-                    sleep(2)
-                    def failedTestNames = new FetchPostMergeFailedTestName(metricsUrl, awsAccessKey, awsSecretKey, awsSessionToken, indexName, this).getPostMergeFailedTestName(failedTest, gitReference)
-                    def testNames = failedTestNames.aggregations.test_name_keyword_agg.buckets.collect { it.key }
-                    def buildNumber = failedTestNames.aggregations.build_number_agg.buckets.collect { it.key }
-                    def pullRequests = failedTestNames.aggregations.pull_request_agg.buckets.collect { it.key }
-                    println("${testNames}" + "," + "${buildNumber}" + "," + "${pullRequests}")
-                    allPullRequests.addAll(pullRequests)
-                    def rowData = [
-                            gitReference: gitReference,
-                            pullRequestLink: pullRequests.collect { pr -> "[${pr}](https://github.com/opensearch-project/OpenSearch/pull/${pr})" }.join('<br><br>'),
-                            buildDetailLink: buildNumber.collect { build -> "[${build}](https://build.ci.opensearch.org/job/gradle-check/${build}/testReport/)" }.join('<br><br>'),
-                            testNames: testNames.collect { testName -> "`${testName}`" }
-                    ]
-                    testData << rowData
+                    try {
+                        sleep(2)
+                        def failedTestNames = new FetchPostMergeFailedTestName(metricsUrl, awsAccessKey, awsSecretKey, awsSessionToken, indexName, this).getPostMergeFailedTestName(failedTest, gitReference)
+                        def testNames = failedTestNames.aggregations.test_name_keyword_agg.buckets.collect { it.key }
+                        def buildNumber = failedTestNames.aggregations.build_number_agg.buckets.collect { it.key }
+                        def pullRequests = failedTestNames.aggregations.pull_request_agg.buckets.collect { it.key }
+//                    println("${testNames}" + "," + "${buildNumber}" + "," + "${pullRequests}")
+                        allPullRequests.addAll(pullRequests)
+                        def rowData = [
+                                gitReference   : gitReference,
+                                pullRequestLink: pullRequests.collect { pr -> "[${pr}](https://github.com/opensearch-project/OpenSearch/pull/${pr})" }.join('<br><br>'),
+                                buildDetailLink: buildNumber.collect { build -> "[${build}](https://build.ci.opensearch.org/job/gradle-check/${build}/testReport/)" }.join('<br><br>'),
+                                testNames      : testNames.collect { testName -> "`${testName}`" }
+                        ]
+                        testData << rowData
+                    } catch (Exception e){
+                        println "Error git ref: "${gitReference}": "${e.message}""
+                        e.printStackTrace()
+                    }
                 }
                 println("Before listing pull requests")
 //                def testNameAdditionalPullRequests = new FetchTestPullRequests(metricsUrl, awsAccessKey, awsSecretKey, awsSessionToken, indexName, this).getTestPullRequests(failedTest).findAll { !allPullRequests.contains(it) }
