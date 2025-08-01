@@ -32,7 +32,7 @@ void call(Map args = [:]) {
             def timeFrame = args.timeFrame ?: '30d'
             def indexName = 'gradle-check'
 //            def postMergeFailedTests = new FetchPostMergeFailedTestClass(metricsUrl, awsAccessKey, awsSecretKey, awsSessionToken, indexName, this).getPostMergeFailedTestClass(timeFrame)
-            postMergeFailedTests = ["FullRollingRestartIT", "RemoteCloseIndexIT", "CloseIndexIT", "SmokeTestMultiNodeClientYamlTestSuiteIT", "AutoForceMergeManagerTests", "DeleteByQueryBasicTests", "ResourceAwareTasksTests", "AzureBlobStoreRepositoryTests", "IndexStatsIT", "Netty4HttpRequestSizeLimitIT", "RemoteStoreIT", "RestoreShallowSnapshotV2IT"]
+            postMergeFailedTests = ["RemoteCloseIndexIT", "CloseIndexIT", "SmokeTestMultiNodeClientYamlTestSuiteIT", "AutoForceMergeManagerTests", "DeleteByQueryBasicTests", "ResourceAwareTasksTests", "AzureBlobStoreRepositoryTests", "IndexStatsIT", "Netty4HttpRequestSizeLimitIT", "RemoteStoreIT", "RestoreShallowSnapshotV2IT"]
             println("${postMergeFailedTests}")
             postMergeFailedTests.each { failedTest ->
                 def testData = []
@@ -56,7 +56,7 @@ void call(Map args = [:]) {
                 }
                 println("Before listing pull requests")
                 def testNameAdditionalPullRequests = new FetchTestPullRequests(metricsUrl, awsAccessKey, awsSecretKey, awsSessionToken, indexName, this).getTestPullRequests(failedTest).findAll { !allPullRequests.contains(it) }
-                println("After Markdown")
+                println("Before Markdown")
                 def markdownTable = new CreateMarkDownTable(failedTest, testData, testNameAdditionalPullRequests).createMarkdownTable()
                 println("After Markdown")
                 writeFile file: "${failedTest}.md", text: markdownTable
