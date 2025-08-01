@@ -80,7 +80,7 @@ class FetchPostMergeTestGitReference  {
                 ],
                 sort: [
                             [
-                                "timestamp": [
+                                "build_number": [
                                 "order": "desc"
                                 ]
                             ]
