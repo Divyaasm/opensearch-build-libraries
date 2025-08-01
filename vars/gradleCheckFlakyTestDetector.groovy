@@ -55,7 +55,7 @@ void call(Map args = [:]) {
                     testData << rowData
                 }
                 println("Before listing pull requests")
-                def testNameAdditionalPullRequests = new FetchTestPullRequests(metricsUrl, awsAccessKey, awsSecretKey, awsSessionToken, indexName, this).getTestPullRequests(failedTest).findAll { !allPullRequests.contains(it) }
+//                def testNameAdditionalPullRequests = new FetchTestPullRequests(metricsUrl, awsAccessKey, awsSecretKey, awsSessionToken, indexName, this).getTestPullRequests(failedTest).findAll { !allPullRequests.contains(it) }
                 println("Before Markdown")
                 def markdownTable = new CreateMarkDownTable(failedTest, testData, testNameAdditionalPullRequests).createMarkdownTable()
                 println("After Markdown")
