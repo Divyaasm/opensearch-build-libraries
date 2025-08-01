@@ -78,6 +78,13 @@ class FetchPostMergeTestGitReference  {
                                 boost: 1
                         ]
                 ],
+                sort: [
+                            [
+                                "timestamp": [
+                                "order": "desc"
+                                ]
+                            ]
+                ],
                 aggregations: [
                         git_reference_keyword_agg: [
                                 terms: [

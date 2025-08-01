@@ -29,7 +29,7 @@ void call(Map args = [:]) {
             def awsAccessKey = env.AWS_ACCESS_KEY_ID
             def awsSecretKey = env.AWS_SECRET_ACCESS_KEY
             def awsSessionToken = env.AWS_SESSION_TOKEN
-            def timeFrame = args.timeFrame ?: '30d'
+            def timeFrame = args.timeFrame ?: '7d'
             def indexName = 'gradle-check'
             def postMergeFailedTests = new FetchPostMergeFailedTestClass(metricsUrl, awsAccessKey, awsSecretKey, awsSessionToken, indexName, this).getPostMergeFailedTestClass(timeFrame)
             postMergeFailedTests.each { failedTest ->
