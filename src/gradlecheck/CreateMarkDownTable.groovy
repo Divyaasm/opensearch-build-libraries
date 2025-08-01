@@ -12,12 +12,12 @@ package gradlecheck
 class CreateMarkDownTable {
     String failedTest
     ArrayList<String> tableData
-    ArrayList<String> additionalPullRequests
 
-    CreateMarkDownTable(String failedTest, List<Map<String, Object>> tableData, List<String> additionalPullRequests) {
+
+    CreateMarkDownTable(String failedTest, List<Map<String, Object>> tableData) {
         this.failedTest = failedTest
         this.tableData = tableData
-        this.additionalPullRequests = additionalPullRequests
+
     }
 
     def createMarkdownTable() {
@@ -43,9 +43,6 @@ Noticed the `${this.failedTest}` has some flaky, failing tests that failed durin
 """
 
         def additionalPRSection = """
-\nThe other pull requests, besides those involved in post-merge actions, that contain failing tests with the `${this.failedTest}` class are:
-
-${this.additionalPullRequests.collect { pr -> "- [${pr}](https://github.com/opensearch-project/OpenSearch/pull/${pr})" }.join('\n')}
 
 For more details on the failed tests refer to [OpenSearch Gradle Check Metrics](https://metrics.opensearch.org/_dashboards/app/dashboards#/view/e5e64d40-ed31-11ee-be99-69d1dbc75083) dashboard.
 """

@@ -57,7 +57,7 @@ void call(Map args = [:]) {
                 println("Before listing pull requests")
 //                def testNameAdditionalPullRequests = new FetchTestPullRequests(metricsUrl, awsAccessKey, awsSecretKey, awsSessionToken, indexName, this).getTestPullRequests(failedTest).findAll { !allPullRequests.contains(it) }
                 println("Before Markdown")
-                def markdownTable = new CreateMarkDownTable(failedTest, testData, testNameAdditionalPullRequests).createMarkdownTable()
+                def markdownTable = new CreateMarkDownTable(failedTest, testData).createMarkdownTable()
                 println("After Markdown")
                 writeFile file: "${failedTest}.md", text: markdownTable
                 def content = readFile("${failedTest}.md")
