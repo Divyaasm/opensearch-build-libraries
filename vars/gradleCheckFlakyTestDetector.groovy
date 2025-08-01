@@ -54,9 +54,14 @@ void call(Map args = [:]) {
                     ]
                     testData << rowData
                 }
+                println("Before listing pull requests")
                 def testNameAdditionalPullRequests = new FetchTestPullRequests(metricsUrl, awsAccessKey, awsSecretKey, awsSessionToken, indexName, this).getTestPullRequests(failedTest).findAll { !allPullRequests.contains(it) }
+                println("After Markdown")
                 def markdownTable = new CreateMarkDownTable(failedTest, testData, testNameAdditionalPullRequests).createMarkdownTable()
+                println("After Markdown")
                 writeFile file: "${failedTest}.md", text: markdownTable
+                def content = readFile("${failedTest}.md")
+                println "Markdown content:\n${content}"
 //                gradleCheckFlakyTestGitHubIssue(
 //                        repoUrl: "https://github.com/opensearch-project/OpenSearch",
 //                        issueTitle: "[AUTOCUT] Gradle Check Flaky Test Report for ${failedTest}",
