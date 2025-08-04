@@ -78,7 +78,7 @@ void call(Map args = [:]) {
 
                 echo "Start gradlecheck"
                 GRADLE_CHECK_STATUS=0
-                ./gradlew clean && ./gradlew ':server:test' --tests 'org.opensearch.index.store.remote.utils.TransferManagerBlobContainerReaderTests.testOverflowDisabledAsynchronous' -Dtests.seed=8B5898102574E0EA -Dtests.security.manager=true -Dtests.jvm.argline="-XX:TieredStopAtLevel=1 -XX:ReservedCodeCacheSize=64m" -Dtests.locale=az-Cyrl -Dtests.timezone=Jamaica -Dtests.coverage=true ${bwc_checkout_align_param} --no-daemon --no-scan || GRADLE_CHECK_STATUS=1
+                ./gradlew clean && ./gradlew ':server:test' --tests 'org.opensearch.index.IndexServiceTests.testAsyncTranslogTrimTaskOnClosedIndex' -Dtests.coverage=true ${bwc_checkout_align_param} --no-daemon --no-scan || GRADLE_CHECK_STATUS=1
 
                 if [ "\$GRADLE_CHECK_STATUS" != 0 ]; then
                     echo Gradle Check Failed!
