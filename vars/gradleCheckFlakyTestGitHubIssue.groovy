@@ -24,7 +24,7 @@ void call(Map args = [:]) {
     label = args.label ?: 'autocut,>test-failure,flaky-test'
     try {
 
-        def gh_token = "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"
+        def gh_token = "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"
 
         sh """
               echo ${gh_token} | gh auth login --with-token
