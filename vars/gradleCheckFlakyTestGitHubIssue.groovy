@@ -23,15 +23,15 @@ import gradlecheck.MarkdownComparator
 void call(Map args = [:]) {
     label = args.label ?: 'autocut,>test-failure,flaky-test'
     try {
-
-        def gh_token = "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"
-
-        sh """
-              echo ${gh_token} | gh auth login --with-token
-        """
+//
+//        def gh_token = "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"
+//
+//        sh """
+//              echo ${gh_token} | gh auth login --with-token
+//        """
 
         def existingIssueBody = sh(
-                script: "${gh_token} gh issue list --repo https://github.com/Divyaasm/opensearch-build -S \"[AUTOCUT] Gradle Check Flaky Test Report for AutoForceMergeManagerTests\" --json number --jq '.[0].number'",
+                script: "gh issue list --repo https://github.com/Divyaasm/opensearch-build -S \"[AUTOCUT] Gradle Check Flaky Test Report for AutoForceMergeManagerTests\" --json number --jq '.[0].number'",
                 returnStdout: true
         ).trim()
 
