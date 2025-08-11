@@ -32,7 +32,7 @@ void call(Map args = [:]) {
             def timeFrame = args.timeFrame ?: '7d'
             def indexName = 'gradle-check'
 //            def postMergeFailedTests = new FetchPostMergeFailedTestClass(metricsUrl, awsAccessKey, awsSecretKey, awsSessionToken, indexName, this).getPostMergeFailedTestClass(timeFrame)
-            def postMergeFailedTests = ["CloseIndexIT"]
+            def postMergeFailedTests = ["AutoForceMergeManagerTests"]
             postMergeFailedTests.each { failedTest ->
                 def testData = []
                 def allPullRequests = []
