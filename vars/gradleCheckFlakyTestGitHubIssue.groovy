@@ -30,12 +30,17 @@ void call(Map args = [:]) {
 //              echo ${gh_token} | gh auth login --with-token
 //        """
 
+        def closedIssue = sh(
+                script: "gh issue list --repo https://github.com/Divyaasm/opensearch-build -S \"[AUTOCUT] Gradle Check Flaky Test Report for AutoForceMergeManagerTests in:title is:closed\" --json number --jq '.[0].number'",
+                returnStdout: true
+        ).trim()
+
         def existingIssueBody = sh(
                 script: "gh issue list --repo https://github.com/Divyaasm/opensearch-build -S \"[AUTOCUT] Gradle Check Flaky Test Report for AutoForceMergeManagerTests in:title is:closed\"  --json body --jq '.[0].body'",
                 returnStdout: true
         ).trim()
 
-//        println "${existingIssueBody}"
+        println "${existingIssueBody}"
 
         def existingTable = new ParseMarkDownTable(existingIssueBody).parseMarkdownTableRows()
         println "1"
