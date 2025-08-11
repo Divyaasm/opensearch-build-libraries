@@ -35,7 +35,7 @@ void call(Map args = [:]) {
                 returnStdout: true
         ).trim()
 
-        println "${existingIssueBody}"
+//        println "${existingIssueBody}"
 
         def existingTable = new ParseMarkDownTable(existingIssueBody).parseMarkdownTableRows()
         println "1"

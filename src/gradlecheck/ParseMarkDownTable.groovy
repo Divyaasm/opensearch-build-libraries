@@ -17,6 +17,7 @@ class ParseMarkDownTable {
     }
 
     def parseMarkdownTableRows() {
+        print "mark"
         def rows = markdown.split("\\|\\s*\\n")
         rows = rows[2..-2] // Skipping headers and footer
         return rows.collect { row ->
