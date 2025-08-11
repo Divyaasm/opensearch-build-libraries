@@ -24,7 +24,11 @@ void call(Map args = [:]) {
     label = args.label ?: 'autocut,>test-failure,flaky-test'
     try {
 
-        def gh_token = "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"
+        def gh_token = "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"
+
+        sh """
+              echo ${gh_token} | gh auth login --with-token
+        """
 
         def existingIssueBody = sh(
                 script: "${gh_token} gh issue list --repo https://github.com/Divyaasm/opensearch-build -S \"[AUTOCUT] Gradle Check Flaky Test Report for AutoForceMergeManagerTests\" --json number --jq '.[0].number'",
