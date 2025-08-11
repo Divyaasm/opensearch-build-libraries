@@ -29,9 +29,10 @@ void call(Map args = [:]) {
             def awsAccessKey = env.AWS_ACCESS_KEY_ID
             def awsSecretKey = env.AWS_SECRET_ACCESS_KEY
             def awsSessionToken = env.AWS_SESSION_TOKEN
-            def timeFrame = args.timeFrame ?: '30d'
+            def timeFrame = args.timeFrame ?: '7d'
             def indexName = 'gradle-check'
-            def postMergeFailedTests = new FetchPostMergeFailedTestClass(metricsUrl, awsAccessKey, awsSecretKey, awsSessionToken, indexName, this).getPostMergeFailedTestClass(timeFrame)
+//            def postMergeFailedTests = new FetchPostMergeFailedTestClass(metricsUrl, awsAccessKey, awsSecretKey, awsSessionToken, indexName, this).getPostMergeFailedTestClass(timeFrame)
+            def postMergeFailedTests = ["AutoForceMergeManagerTests"]
             postMergeFailedTests.each { failedTest ->
                 def testData = []
                 def allPullRequests = []
@@ -53,6 +54,8 @@ void call(Map args = [:]) {
                 def testNameAdditionalPullRequests = new FetchTestPullRequests(metricsUrl, awsAccessKey, awsSecretKey, awsSessionToken, indexName, this).getTestPullRequests(failedTest).findAll { !allPullRequests.contains(it) }
                 def markdownTable = new CreateMarkDownTable(failedTest, testData, testNameAdditionalPullRequests).createMarkdownTable()
                 writeFile file: "${failedTest}.md", text: markdownTable
+                def content = readFile("${failedTest}.md")
+                println "Markdown content:\n${content}"
                 gradleCheckFlakyTestGitHubIssue(
                         repoUrl: "https://github.com/opensearch-project/OpenSearch",
                         issueTitle: "[AUTOCUT] Gradle Check Flaky Test Report for ${failedTest}",
@@ -64,4 +67,3 @@ void call(Map args = [:]) {
         }
     }
 }
-
