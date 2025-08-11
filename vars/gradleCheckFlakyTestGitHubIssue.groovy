@@ -38,7 +38,7 @@ void call(Map args = [:]) {
         println "${openIssue}"
 
         sh(
-                script: "gh issue edit ${openIssue} --repo https://github.com/Divyaasm/opensearch-build --body-file \\\"${args.issueBodyFile}\\\"",
+                script: "gh issue edit ${openIssue} --repo https://github.com/Divyaasm/opensearch-build --body-file \"${args.issueBodyFile}\"",
                 returnStdout: true
         ).trim()
 
