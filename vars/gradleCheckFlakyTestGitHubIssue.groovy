@@ -30,20 +30,21 @@ void call(Map args = [:]) {
 //              echo ${gh_token} | gh auth login --with-token
 //        """
 
-        def closedIssue = sh(
-                script: "gh issue list --repo https://github.com/Divyaasm/opensearch-build -S \"[AUTOCUT] Gradle Check Flaky Test Report for AutoForceMergeManagerTests in:title is:closed\" --json number --jq '.[0].number'",
+        def openIssue = sh(
+                script: "gh issue list --repo https://github.com/Divyaasm/opensearch-build -S \"[AUTOCUT] Gradle Check Flaky Test Report for AutoForceMergeManagerTests in:title\" --json number --jq '.[0].number'",
                 returnStdout: true
         ).trim()
 
-        def existingIssueBody = sh(
-                script: "gh issue list --repo https://github.com/Divyaasm/opensearch-build -S \"[AUTOCUT] Gradle Check Flaky Test Report for AutoForceMergeManagerTests in:title is:closed\"  --json body --jq '.[0].body'",
+        println "${openIssue}"
+
+        sh(
+                script: "gh issue edit ${openIssue} --repo https://github.com/Divyaasm/opensearch-build --body-file \\\"${args.issueBodyFile}\\\"",
                 returnStdout: true
         ).trim()
 
-        def existingTable = new ParseMarkDownTable(existingIssueBody).parseMarkdownTableRows()
-        println "${existingTable}"
+//        def existingTable = new ParseMarkDownTable(existingIssueBody).parseMarkdownTableRows()
+//        println "${existingTable}"
         def markdownTable = new ParseMarkDownTable(readFile(args.issueBodyFile)).parseMarkdownTableRows()
-        println "${existingTable.sort{ -it[Git Reference] } }"
 //        def differences = new MarkdownComparator(markdownTable, existingTable.sort(-it.Git Reference)).markdownComparison()
         println "${differences}"
                 if (!differences) {
