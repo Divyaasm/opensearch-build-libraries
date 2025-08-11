@@ -43,8 +43,8 @@ void call(Map args = [:]) {
         def existingTable = new ParseMarkDownTable(existingIssueBody).parseMarkdownTableRows()
         println "${existingTable}"
         def markdownTable = new ParseMarkDownTable(readFile(args.issueBodyFile)).parseMarkdownTableRows()
-        println "${markdownTable}"
-        def differences = new MarkdownComparator(markdownTable, existingTable).markdownComparison()
+        println "${existingTable.sort{ -it[Git Reference] } }"
+//        def differences = new MarkdownComparator(markdownTable, existingTable.sort(-it.Git Reference)).markdownComparison()
         println "${differences}"
                 if (!differences) {
                     println("Not Re-opening the issue as the no change in the Flaky report after the issue is closed")
