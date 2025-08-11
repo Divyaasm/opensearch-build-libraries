@@ -31,7 +31,7 @@ void call(Map args = [:]) {
 //        """
 
         def existingIssueBody = sh(
-                script: "gh issue list --repo https://github.com/Divyaasm/opensearch-build -S \"[AUTOCUT] Gradle Check Flaky Test Report for AutoForceMergeManagerTests\" --json body --jq '.[0].number'",
+                script: "gh issue list --repo https://github.com/Divyaasm/opensearch-build -S \"[AUTOCUT] Gradle Check Flaky Test Report for AutoForceMergeManagerTests\" --json body --jq '.[0].body'",
                 returnStdout: true
         ).trim()
 
