@@ -25,7 +25,7 @@ void call(Map args = [:]) {
     try {
 
         def openIssue = sh(
-                script: "gh issue list --repo https://github.com/Divyaasm/opensearch-build -S \"[AUTOCUT] Gradle Check Flaky Test Report for ${issueTitle} in:title\" --json number --jq '.[0].number'",
+                script: "gh issue list --repo https://github.com/Divyaasm/opensearch-build -S \"[AUTOCUT] Gradle Check Flaky Test Report for ${args.issueTitle} in:title\" --json number --jq '.[0].number'",
                 returnStdout: true
         ).trim()
 
