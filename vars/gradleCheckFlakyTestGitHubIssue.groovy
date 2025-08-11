@@ -40,13 +40,11 @@ void call(Map args = [:]) {
                 returnStdout: true
         ).trim()
 
-        println "${existingIssueBody}"
-
-        // def existingTable = new ParseMarkDownTable(existingIssueBody).parseMarkdownTableRows()
+        def existingTable = new ParseMarkDownTable(existingIssueBody).parseMarkdownTableRows()
         println "1"
-                def markdownTable = new ParseMarkDownTable(readFile(args.issueBodyFile)).parseMarkdownTableRows()
+        def markdownTable = new ParseMarkDownTable(readFile(args.issueBodyFile)).parseMarkdownTableRows()
         println "2"
-                def differences = new MarkdownComparator(markdownTable, existingTable).markdownComparison()
+        def differences = new MarkdownComparator(markdownTable, existingTable).markdownComparison()
         println "3"
                 if (!differences) {
                     println("Not Re-opening the issue as the no change in the Flaky report after the issue is closed")
