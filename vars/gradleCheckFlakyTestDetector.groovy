@@ -31,7 +31,8 @@ void call(Map args = [:]) {
             def awsSessionToken = env.AWS_SESSION_TOKEN
             def timeFrame = args.timeFrame ?: '7d'
             def indexName = 'gradle-check'
-            def postMergeFailedTests = new FetchPostMergeFailedTestClass(metricsUrl, awsAccessKey, awsSecretKey, awsSessionToken, indexName, this).getPostMergeFailedTestClass(timeFrame)
+//            def postMergeFailedTests = new FetchPostMergeFailedTestClass(metricsUrl, awsAccessKey, awsSecretKey, awsSessionToken, indexName, this).getPostMergeFailedTestClass(timeFrame)
+            def postMergeFailedTests = ["AutoForceMergeManagerTests"]
             postMergeFailedTests.each { failedTest ->
                 def testData = []
                 def allPullRequests = []
@@ -55,13 +56,13 @@ void call(Map args = [:]) {
                 writeFile file: "${failedTest}.md", text: markdownTable
                 def content = readFile("${failedTest}.md")
                 println "Markdown content:\n${content}"
-//                gradleCheckFlakyTestGitHubIssue(
-//                        repoUrl: "https://github.com/opensearch-project/OpenSearch",
-//                        issueTitle: "[AUTOCUT] Gradle Check Flaky Test Report for ${failedTest}",
-//                        issueBodyFile: "${failedTest}.md",
-//                        label: args.issueLabels,
-//                        issueEdit: true
-//                )
+                gradleCheckFlakyTestGitHubIssue(
+                        repoUrl: "https://github.com/opensearch-project/OpenSearch",
+                        issueTitle: "[AUTOCUT] Gradle Check Flaky Test Report for ${failedTest}",
+                        issueBodyFile: "${failedTest}.md",
+                        label: args.issueLabels,
+                        issueEdit: true
+                )
             }
         }
     }

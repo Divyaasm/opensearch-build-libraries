@@ -23,13 +23,17 @@ import gradlecheck.MarkdownComparator
 void call(Map args = [:]) {
     label = args.label ?: 'autocut,>test-failure,flaky-test'
     try {
-                def existingIssueBody = sh(
-                        script: "gh issue list --repo https://github.com/opensearch-project/opensearch-build-libraries -S \"[Bug]: Formatting issue with documentation issue comments in:title is:open\" --json number --jq '.[0].number'",
-                        returnStdout: true
-                ).trim()
 
+        def gh_token = "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"
 
-                def existingTable = new ParseMarkDownTable(existingIssueBody).parseMarkdownTableRows()
+        def existingIssueBody = sh(
+                script: "${gh_token} gh issue list --repo https://github.com/Divyaasm/opensearch-build -S \"[AUTOCUT] Gradle Check Flaky Test Report for AutoForceMergeManagerTests\" --json number --jq '.[0].number'",
+                returnStdout: true
+        ).trim()
+
+        println "${existingIssueBody}"
+
+        def existingTable = new ParseMarkDownTable(existingIssueBody).parseMarkdownTableRows()
                 def markdownTable = new ParseMarkDownTable(readFile(args.issueBodyFile)).parseMarkdownTableRows()
                 def differences = new MarkdownComparator(markdownTable, existingTable).markdownComparison()
                 if (!differences) {
