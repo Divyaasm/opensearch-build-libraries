@@ -31,15 +31,18 @@ void call(Map args = [:]) {
 //        """
 
         def existingIssueBody = sh(
-                script: "gh issue list --repo https://github.com/Divyaasm/opensearch-build -S \"[AUTOCUT] Gradle Check Flaky Test Report for AutoForceMergeManagerTests\" --json number --jq '.[0].number'",
+                script: "gh issue list --repo https://github.com/Divyaasm/opensearch-build -S \"[AUTOCUT] Gradle Check Flaky Test Report for AutoForceMergeManagerTests\" --json body --jq '.[0].number'",
                 returnStdout: true
         ).trim()
 
         println "${existingIssueBody}"
 
         def existingTable = new ParseMarkDownTable(existingIssueBody).parseMarkdownTableRows()
+        println "1"
                 def markdownTable = new ParseMarkDownTable(readFile(args.issueBodyFile)).parseMarkdownTableRows()
+        println "2"
                 def differences = new MarkdownComparator(markdownTable, existingTable).markdownComparison()
+        println "3"
                 if (!differences) {
                     println("Not Re-opening the issue as the no change in the Flaky report after the issue is closed")
                 } else {
