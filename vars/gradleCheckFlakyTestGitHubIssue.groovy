@@ -36,13 +36,13 @@ void call(Map args = [:]) {
         ).trim()
 
         def existingIssueBody = sh(
-                script: "gh issue list --repo https://github.com/Divyaasm/opensearch-build -S \"[AUTOCUT] Gradle Check Flaky Test Report for AutoForceMergeManagerTests in:title is:closed\"  --json body --jq '.[0].body'",
+                script: "gh issue list --repo https://github.com/Divyaasm/opensearch-build -S \"[AUTOCUT] Gradle Check Flaky Test Report for AutoForceMergeManagerTests in:title\"  --json body --jq '.[0].body'",
                 returnStdout: true
         ).trim()
 
         println "${existingIssueBody}"
 
-        def existingTable = new ParseMarkDownTable(existingIssueBody).parseMarkdownTableRows()
+        // def existingTable = new ParseMarkDownTable(existingIssueBody).parseMarkdownTableRows()
         println "1"
                 def markdownTable = new ParseMarkDownTable(readFile(args.issueBodyFile)).parseMarkdownTableRows()
         println "2"
