@@ -31,15 +31,25 @@ void call(Map args = [:]) {
 
         println "${openIssue}"
 
-        sh(
-                script: "gh issue edit ${openIssue} --repo https://github.com/Divyaasm/opensearch-build --body-file \"${args.issueBodyFile}\"",
-                returnStdout: true
-        ).trim()
+        if(openIssue)
+        {
+            sh(
+                    script: "gh issue edit ${openIssue} --repo https://github.com/Divyaasm/opensearch-build --body-file \"${args.issueBodyFile}\"",
+                    returnStdout: true
+            ).trim()
+        }
+        if (!openIssue){
+            existingIssueBody = sh(
+                    script: "gh issue list --repo https://github.com/Divyaasm/opensearch-build -S \"${args.issueTitle} in:title is:closed\"  --json body --jq '.[0].body'",
+                    returnStdout: true
+            ).trim()
 
-//        def existingTable = new ParseMarkDownTable(existingIssueBody).parseMarkdownTableRows()
+        }
+
+        def existingTable = new ParseMarkDownTable(existingIssueBody).parseMarkdownTableRows()
 //        println "${existingTable}"
         def markdownTable = new ParseMarkDownTable(readFile(args.issueBodyFile)).parseMarkdownTableRows()
-//        def differences = new MarkdownComparator(markdownTable, existingTable.sort(-it.Git Reference)).markdownComparison()
+        def differences = new MarkdownComparator(markdownTable, existingTable).markdownComparison()
         println "${differences}"
         if (!differences) {
             println("Not Re-opening the issue as the no change in the Flaky report after the issue is closed")
