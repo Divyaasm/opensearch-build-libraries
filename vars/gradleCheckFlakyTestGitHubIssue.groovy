@@ -61,6 +61,15 @@ void call(Map args = [:]) {
                         "Build Details: ${diffRow['Build Details']}, " +
                         "Test Name: ${diffRow['Test Name']}"
             }
+            sh(
+                    script: "gh issue reopen --repo ${args.repoUrl} ${closedIssue}",
+                    returnStdout: true
+            )
+            sh(
+                    script: "gh issue edit ${closedIssue} --repo ${args.repoUrl} --body-file \"${args.issueBodyFile}\"",
+                    returnStdout: true
+            )
+
         }
 
 
