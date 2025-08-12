@@ -46,31 +46,31 @@ void call(Map args = [:]) {
 
         }
 
-        def existingTable = new ParseMarkDownTable(existingIssueBody).parseMarkdownTableRows()
-//        println "${existingTable}"
-        def markdownTable = new ParseMarkDownTable(readFile(args.issueBodyFile)).parseMarkdownTableRows()
-        def differences = new MarkdownComparator(markdownTable, existingTable).markdownComparison()
-        println "${differences}"
-        if (!differences) {
-            println("Not Re-opening the issue as the no change in the Flaky report after the issue is closed")
-        } else {
-            println "Differences found:"
-            differences.each { diffRow ->
-                println "Git Reference: ${diffRow['Git Reference']}, " +
-                        "Merged Pull Request: ${diffRow['Merged Pull Request']}, " +
-                        "Build Details: ${diffRow['Build Details']}, " +
-                        "Test Name: ${diffRow['Test Name']}"
-            }
-            sh(
-                    script: "gh issue reopen --repo ${args.repoUrl} ${closedIssue}",
-                    returnStdout: true
-            )
-            sh(
-                    script: "gh issue edit ${closedIssue} --repo ${args.repoUrl} --body-file \"${args.issueBodyFile}\"",
-                    returnStdout: true
-            )
-
-        }
+//        def existingTable = new ParseMarkDownTable(existingIssueBody).parseMarkdownTableRows()
+////        println "${existingTable}"
+//        def markdownTable = new ParseMarkDownTable(readFile(args.issueBodyFile)).parseMarkdownTableRows()
+//        def differences = new MarkdownComparator(markdownTable, existingTable).markdownComparison()
+//        println "${differences}"
+//        if (!differences) {
+//            println("Not Re-opening the issue as the no change in the Flaky report after the issue is closed")
+//        } else {
+//            println "Differences found:"
+//            differences.each { diffRow ->
+//                println "Git Reference: ${diffRow['Git Reference']}, " +
+//                        "Merged Pull Request: ${diffRow['Merged Pull Request']}, " +
+//                        "Build Details: ${diffRow['Build Details']}, " +
+//                        "Test Name: ${diffRow['Test Name']}"
+//            }
+//            sh(
+//                    script: "gh issue reopen --repo ${args.repoUrl} ${closedIssue}",
+//                    returnStdout: true
+//            )
+//            sh(
+//                    script: "gh issue edit ${closedIssue} --repo ${args.repoUrl} --body-file \"${args.issueBodyFile}\"",
+//                    returnStdout: true
+//            )
+//
+//        }
 
 
     } catch (Exception ex) {
