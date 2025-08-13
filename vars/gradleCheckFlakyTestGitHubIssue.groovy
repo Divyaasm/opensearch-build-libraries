@@ -43,6 +43,7 @@ void call(Map args = [:]) {
                     script: "gh issue list --repo https://github.com/Divyaasm/opensearch-build -S \"${args.issueTitle} in:title is:closed\"  --json body --jq '.[0].body'",
                     returnStdout: true
             ).trim()
+        sleep 30
 
         }
 
