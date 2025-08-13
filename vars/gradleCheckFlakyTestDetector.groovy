@@ -56,7 +56,7 @@ void call(Map args = [:]) {
                 writeFile file: "${failedTest}.md", text: markdownTable
                 def content = readFile("${failedTest}.md")
                 println "Markdown content:\n${content}"
-                sleep 20
+                sleep 35
                 gradleCheckFlakyTestGitHubIssue(
                         repoUrl: "https://github.com/opensearch-project/OpenSearch",
                         issueTitle: "[AUTOCUT] Gradle Check Flaky Test Report for ${failedTest}",
