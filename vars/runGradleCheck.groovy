@@ -17,7 +17,6 @@ void call(Map args = [:]) {
     println("Git Repo: ${git_repo_url}")
     println("Git Reference: ${git_reference}")
     println("Bwc Checkout Align: ${bwc_checkout_align}")
-    println("Server module": ${args.bwcCheckoutAlign})
 
     if (Boolean.parseBoolean(bwc_checkout_align)) {
         bwc_checkout_align_param = '-Dbwc.checkout.align=true'
