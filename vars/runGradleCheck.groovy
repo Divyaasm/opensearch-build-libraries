@@ -12,7 +12,7 @@ void call(Map args = [:]) {
     def git_reference = args.gitReference ?: 'null'
     def bwc_checkout_align = args.bwcCheckoutAlign ?: 'false'
     def bwc_checkout_align_param = ''
-    def command =  args.serverModule ? ":server:check" : "check -x :server:check"
+    def command =  args.serverModule ? ":server:internalClusterTest" : "check -x :server:internalClusterTest -x :plugins:repository-s3:check"
 
     println("Git Repo: ${git_repo_url}")
     println("Git Reference: ${git_reference}")
