@@ -12,7 +12,7 @@ void call(Map args = [:]) {
     def git_reference = args.gitReference ?: 'null'
     def bwc_checkout_align = args.bwcCheckoutAlign ?: 'false'
     def bwc_checkout_align_param = ''
-    def command =  args.serverModule ? ":server:check" : "check -x :server:check -x :server:test -x :plugins:repository-s3:check"
+    def command =  args.serverModule ? ":server:check -Dmoduletests.coverage=true" : "check -x :server:check -x :plugins:repository-s3:check -Dtests.coverage=true"
 
     println("Git Repo: ${git_repo_url}")
     println("Git Reference: ${git_reference}")
@@ -79,7 +79,7 @@ void call(Map args = [:]) {
 
                 echo "Start gradlecheck"
                 GRADLE_CHECK_STATUS=0
-                ./gradlew clean && ./gradlew ${command} -Dtests.coverage=true ${bwc_checkout_align_param} --no-daemon --no-scan || GRADLE_CHECK_STATUS=1
+                ./gradlew clean && ./gradlew ${command} ${bwc_checkout_align_param} --no-daemon --no-scan || GRADLE_CHECK_STATUS=1
                 if [ "\$GRADLE_CHECK_STATUS" != 0 ]; then
                     echo Gradle Check Failed!
                     exit 1
