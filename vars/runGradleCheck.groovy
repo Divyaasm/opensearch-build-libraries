@@ -27,9 +27,6 @@ void call(Map args = [:]) {
         System.exit(1)
     }
     else {
-        withCredentials([
-            usernamePassword(credentialsId: "jenkins-gradle-check-s3-aws-credentials", usernameVariable: 'amazon_s3_access_key', passwordVariable: 'amazon_s3_secret_key'),
-            usernamePassword(credentialsId: "jenkins-gradle-check-s3-aws-resources", usernameVariable: 'amazon_s3_base_path', passwordVariable: 'amazon_s3_bucket')]) {
 
             sh """
                 #!/bin/bash
@@ -86,7 +83,6 @@ void call(Map args = [:]) {
                 fi
 
             """
-        }
 
     }
 
