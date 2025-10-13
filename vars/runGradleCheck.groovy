@@ -10,9 +10,8 @@ void call(Map args = [:]) {
     def lib = library(identifier: 'jenkins@main', retriever: legacySCM(scm))
     def git_repo_url = args.gitRepoUrl ?: 'null'
     def git_reference = args.gitReference ?: 'null'
-    def bwc_checkout_align = args.bwcCheckoutAlign ?: 'false'
     def bwc_checkout_align_param = ''
-    def command =  args.serverModule ? ":server:check -Dmoduletests.coverage=true" : "check -x :server:check -x :plugins:repository-s3:check -Dtests.coverage=true"
+    def command =  args.scope ? ":server:check -Dmoduletests.coverage=true" : "check -x :server:check -x :plugins:repository-s3:check -Dtests.coverage=true"
 
     println("Git Repo: ${git_repo_url}")
     println("Git Reference: ${git_reference}")
