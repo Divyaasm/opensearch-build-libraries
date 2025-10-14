@@ -26,7 +26,7 @@ void call(Map args = [:]) {
         withCredentials([usernamePassword(credentialsId: 'jenkins-github-bot-token', passwordVariable: 'GITHUB_TOKEN', usernameVariable: 'GITHUB_USER')]) {
             println('Issue already exists, editing the issue body')
                 sh(
-                        script: script: "gh issue create --title \"${args.issueTitle}\" --body-file \"${args.issueBodyFile}\" --label \"${label}\" --label \"untriaged\" --repo ${args.repoUrl}",
+                        script: "gh issue edit ${openIssue} --repo ${args.repoUrl} --body-file \"${args.issueBodyFile}\"",
                         returnStdout: true
                 )
 
@@ -85,7 +85,7 @@ void call(Map args = [:]) {
 //             }
         }
     } catch (Exception ex) {
-        println("Unable to create GitHub issue for ${args.repoUrl}", ex.getMessage())
+        error("Unable to create GitHub issue for ${args.repoUrl}", ex.getMessage())
     }
 }
 
