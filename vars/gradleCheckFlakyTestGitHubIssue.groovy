@@ -82,7 +82,3 @@ void call(Map args = [:]) {
         error("Unable to create GitHub issue for ${args.repoUrl}", ex.getMessage())
     }
 }
-
-
-
-
