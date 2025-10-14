@@ -31,8 +31,9 @@ void call(Map args = [:]) {
             def awsSessionToken = env.AWS_SESSION_TOKEN
             def timeFrame = args.timeFrame ?: '7d'
             def indexName = 'gradle-check'
-//            def postMergeFailedTests = new FetchPostMergeFailedTestClass(metricsUrl, awsAccessKey, awsSecretKey, awsSessionToken, indexName, this).getPostMergeFailedTestClass(timeFrame)
-            postMergeFailedTests = ["FullClusterRestartIT", "FullRollingRestartIT", "RemoteCloseIndexIT", "CloseIndexIT", "SmokeTestMultiNodeClientYamlTestSuiteIT", "AutoForceMergeManagerTests", "DeleteByQueryBasicTests", "ResourceAwareTasksTests", "AzureBlobStoreRepositoryTests", "IndexStatsIT", "Netty4HttpRequestSizeLimitIT", "RemoteStoreIT", "RestoreShallowSnapshotV2IT"]
+            def postMergeFailedTests = new FetchPostMergeFailedTestClass(metricsUrl, awsAccessKey, awsSecretKey, awsSessionToken, indexName, this).getPostMergeFailedTestClass(timeFrame)
+//             postMergeFailedTests = ["FullClusterRestartIT", "FullRollingRestartIT", "RemoteCloseIndexIT", "CloseIndexIT", "SmokeTestMultiNodeClientYamlTestSuiteIT", "AutoForceMergeManagerTests", "DeleteByQueryBasicTests", "ResourceAwareTasksTests", "AzureBlobStoreRepositoryTests", "IndexStatsIT", "Netty4HttpRequestSizeLimitIT", "RemoteStoreIT", "RestoreShallowSnapshotV2IT"]
+            postMergeFailedTests = ["MixedClusterClientYamlTestSuiteIT"]
             println("${postMergeFailedTests}")
             postMergeFailedTests.each { failedTest ->
                 def testData = []
@@ -41,7 +42,6 @@ void call(Map args = [:]) {
                 println("${postMergeTestGitReference}")
                 postMergeTestGitReference.each { gitReference ->
                     try {
-                        sleep(2)
                         def failedTestNames = new FetchPostMergeFailedTestName(metricsUrl, awsAccessKey, awsSecretKey, awsSessionToken, indexName, this).getPostMergeFailedTestName(failedTest, gitReference)
                         def testNames = failedTestNames.aggregations.test_name_keyword_agg.buckets.collect { it.key }
                         def buildNumber = failedTestNames.aggregations.build_number_agg.buckets.collect { it.key }
