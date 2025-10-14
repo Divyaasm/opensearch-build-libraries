@@ -85,7 +85,7 @@ void call(Map args = [:]) {
 //             }
         }
     } catch (Exception ex) {
-        error("Unable to create GitHub issue for ${args.repoUrl}", ex.getMessage())
+        println("Unable to create GitHub issue for ${args.repoUrl}", ex.getMessage())
     }
 }
 
