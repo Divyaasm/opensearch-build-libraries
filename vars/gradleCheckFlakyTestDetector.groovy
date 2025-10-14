@@ -56,13 +56,13 @@ void call(Map args = [:]) {
                 def content = readFile("${failedTest}.md")
                 println "Markdown content:\n${content}"
 
-//                gradleCheckFlakyTestGitHubIssue(
-//                        repoUrl: "https://github.com/opensearch-project/OpenSearch",
-//                        issueTitle: "[AUTOCUT] Gradle Check Flaky Test Report for ${failedTest}",
-//                        issueBodyFile: "${failedTest}.md",
-//                        label: args.issueLabels,
-//                        issueEdit: true
-//                )
+               gradleCheckFlakyTestGitHubIssue(
+                       repoUrl: "https://github.com/Divyaasm/opensearch-build",
+                       issueTitle: "[AUTOCUT] Gradle Check Flaky Test Report for ${failedTest}",
+                       issueBodyFile: "${failedTest}.md",
+                       label: args.issueLabels,
+                       issueEdit: true
+               )
             }
         }
     }
