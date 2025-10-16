@@ -14,10 +14,10 @@ void call(Map args = [:]) {
     def bwc_checkout_align_param = ''
     def command
     switch (args.scope) {
-        case: 'server':
+        case 'server':
             command = ':server:check -Dmoduletests.coverage=true'
             break
-        case: 'non-server':
+        case 'non-server':
             command = 'check -x :server:check -Dtests.coverage=true'
             break
         default:
