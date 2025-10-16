@@ -13,12 +13,16 @@ void call(Map args = [:]) {
     def bwc_checkout_align = args.bwcCheckoutAlign ?: 'false'
     def bwc_checkout_align_param = ''
     def command
-    if (!args.scope) {
-        command = "check -Dtests.coverage=true"
-    } else if (args.scope == "server") {
-        command = ":server:check -Dmoduletests.coverage=true"
-    } else {
-        command = "check -x :server:check -x :plugins:repository-s3:check -Dtests.coverage=true"
+    switch (args.scope) {
+        case: 'server':
+            command = ':server:check -Dmoduletests.coverage=true'
+            break
+        case: 'non-server':
+            command = 'check -x :server:check -Dtests.coverage=true'
+            break
+        default:
+            command = 'check -Dtests.coverage=true'
+            break
     }
     println("Git Repo: ${git_repo_url}")
     println("Git Reference: ${git_reference}")
