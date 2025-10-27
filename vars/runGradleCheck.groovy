@@ -39,16 +39,6 @@ void call(Map args = [:]) {
                 command = 'check -Dtests.coverage=true'
                 break
         }
-
-        def secret_s3 = [
-            [envVar: 'amazon_s3_access_key', secretRef: 'op://opensearch-infra-secrets/gradle-check/jenkins-gradle-check-s3-aws-access-key'],
-            [envVar: 'amazon_s3_secret_key', secretRef: 'op://opensearch-infra-secrets/gradle-check/jenkins-gradle-check-s3-aws-secret-key'],
-            [envVar: 'amazon_s3_base_path', secretRef: 'op://opensearch-infra-secrets/gradle-check/jenkins-gradle-check-s3-aws-base-path'],
-            [envVar: 'amazon_s3_bucket', secretRef: 'op://opensearch-infra-secrets/gradle-check/jenkins-gradle-check-s3-aws-bucket-name']
-        ]
-
-        withSecrets(secrets: secret_s3){
-
             sh """
                 #!/bin/bash
 
@@ -106,6 +96,4 @@ void call(Map args = [:]) {
 
             """
         }
-
-    }
 }
